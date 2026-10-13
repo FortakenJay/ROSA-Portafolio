@@ -277,11 +277,13 @@ html:has(.curtain) body {
 
 @media (prefers-reduced-motion: reduce) {
   .curtain,
+  .curtain-petals,
   .logo-link {
     transition: none;
   }
 
-  .curtain {
+  .curtain,
+  .curtain-petals {
     display: none;
   }
 }
