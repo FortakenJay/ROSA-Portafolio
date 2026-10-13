@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Petrona, Yeseva_One } from "next/font/google";
 import { Curtain } from "@/components/curtain";
+import { ScrollFlow } from "@/components/scroll-flow";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
@@ -20,17 +21,17 @@ const body = Petrona({
 
 export const metadata: Metadata = {
   title: {
-    default: "Rosa",
-    template: "%s, Rosa",
+    default: "Rosa Chen Liang Portfolio",
+    template: "%s, Rosa Chen Liang Portfolio",
   },
   description: "Illustration and project reels. Sample portfolio in a cute gothic lolita mood.",
   openGraph: {
-    title: "Rosa",
+    title: "Rosa Chen Liang Portfolio",
     description: "Illustration and project reels. Sample portfolio in a cute gothic lolita mood.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Rosa",
+    title: "Rosa Chen Liang Portfolio",
     description: "Illustration and project reels. Sample portfolio in a cute gothic lolita mood.",
   },
 };
@@ -40,9 +41,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${display.variable} ${body.variable} h-full antialiased`}>
       <body className="flex min-h-dvh flex-col">
         <Curtain />
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <ScrollFlow>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </ScrollFlow>
       </body>
     </html>
   );

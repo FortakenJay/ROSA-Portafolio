@@ -6,15 +6,6 @@ import type { GalleryPiece } from "@/lib/content";
 import { Plate } from "@/components/plate";
 import { Zoomable } from "@/components/zoomable";
 
-const aspects = [
-  "aspect-[5/4]",
-  "aspect-[4/5]",
-  "aspect-[5/4]",
-  "aspect-[3/4]",
-  "aspect-[5/4]",
-  "aspect-[4/5]",
-];
-
 export function Gallery({ pieces }: { pieces: GalleryPiece[] }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [pieceIndex, setPieceIndex] = useState(0);
@@ -68,12 +59,13 @@ export function Gallery({ pieces }: { pieces: GalleryPiece[] }) {
 
   return (
     <>
-      <ul className="mx-auto grid max-w-5xl grid-cols-1 items-start gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="mx-auto grid max-w-5xl grid-cols-1 items-start gap-8 sm:grid-cols-2">
         {pieces.map((item, index) => (
           <li key={item.title}>
             <button
               type="button"
-              className="block w-full cursor-pointer overflow-hidden rounded-[1.75rem] border-2 border-ink text-left hover:border-rose"
+              data-flow="plate"
+              className="group block w-full cursor-pointer overflow-hidden rounded-[1.75rem] border-2 border-ink text-left transition-colors duration-500 hover:border-rose"
               aria-label={`Open ${item.title}`}
               onClick={() => {
                 setPieceIndex(index);
@@ -81,7 +73,10 @@ export function Gallery({ pieces }: { pieces: GalleryPiece[] }) {
                 setOpenToken((current) => current + 1);
               }}
             >
-              <Plate spec={item.pictures[0]} className={`${aspects[index % aspects.length]} w-full`} />
+              <Plate
+                spec={item.pictures[0]}
+                className="aspect-[16/10] w-full origin-center scale-125 transition-transform duration-700 ease-out group-hover:scale-150 motion-reduce:transition-none motion-reduce:group-hover:scale-125"
+              />
             </button>
           </li>
         ))}

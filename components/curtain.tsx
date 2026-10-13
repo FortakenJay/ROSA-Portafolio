@@ -50,10 +50,6 @@ const fallenPetals = [
 const outerSpins = [0, 60, 120, 180, 240, 300];
 const innerSpins = [30, 150, 270];
 
-function spinOf(_index: number, target: Element) {
-  return Number((target as HTMLElement).dataset.spin);
-}
-
 function turnOf(_index: number, target: Element) {
   return Number((target as HTMLElement).dataset.turn);
 }
@@ -83,18 +79,13 @@ export function Curtain() {
     body.style.top = `-${scrollY}px`;
     body.style.width = "100%";
 
-    gsap.set("[data-petal]", { scale: 0.2, rotation: 0, transformOrigin: "50% 100%" });
     gsap.set("[data-rose]", {
       scale: 0.42,
       rotation: tiltOf,
       transformOrigin: "50% 50%",
     });
-    gsap.set("[data-bud]", { scale: 1, opacity: 1, transformOrigin: "50% 50%" });
     gsap.set("[data-fall]", { opacity: 1, y: 0, rotation: turnOf, transformOrigin: "50% 50%" });
 
-    const blockScroll = (event: Event) => {
-      event.preventDefault();
-    };
     const blockKeys = (event: KeyboardEvent) => {
       const scrolling = event.key === " " || event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "PageDown" || event.key === "PageUp" || event.key === "Home" || event.key === "End";
       if (!scrolling) return;
@@ -102,8 +93,6 @@ export function Curtain() {
       event.preventDefault();
     };
 
-    window.addEventListener("wheel", blockScroll, { passive: false });
-    window.addEventListener("touchmove", blockScroll, { passive: false });
     window.addEventListener("keydown", blockKeys);
     return () => {
       html.style.overflow = previousHtml;
@@ -112,8 +101,6 @@ export function Curtain() {
       body.style.top = previousTop;
       body.style.width = previousWidth;
       window.scrollTo(0, scrollY);
-      window.removeEventListener("wheel", blockScroll);
-      window.removeEventListener("touchmove", blockScroll);
       window.removeEventListener("keydown", blockKeys);
     };
   }, [visible]);
@@ -139,20 +126,7 @@ export function Curtain() {
         .from("[data-curtain-rule]", { scaleX: 0, duration: 0.4, transformOrigin: "center" }, "-=0.25")
         .add("rise", "+=0.3")
         .to(node, { clipPath: "inset(0 0 100% 0)", duration: 0.85 }, "rise")
-        .to(
-          "[data-petal]",
-          {
-            scale: 1,
-            rotation: spinOf,
-            duration: 0.9,
-            stagger: { amount: 0.25 },
-            ease: "power2.out",
-            transformOrigin: "50% 100%",
-          },
-          0,
-        )
         .to("[data-rose]", { scale: 1, duration: 0.9, ease: "power2.out", transformOrigin: "50% 50%" }, 0)
-        .to("[data-bud]", { scale: 1.2, opacity: 0, duration: 0.7, ease: "power2.in", transformOrigin: "50% 50%" }, 0)
         .to(
           "[data-fall]",
           {
@@ -203,20 +177,18 @@ export function Curtain() {
                 <span
                   key={spin}
                   data-petal="true"
-                  data-spin={spin}
-                  className={`absolute top-[4%] left-[27%] h-[46%] w-[46%] rounded-full ${index % 2 === 0 ? "bg-primary-500" : "bg-primary-600"}`}
+                  className={`absolute top-[4%] left-[27%] h-[46%] w-[46%] origin-bottom rounded-full ${index % 2 === 0 ? "bg-primary-500" : "bg-primary-600"}`}
+                  style={{ transform: `rotate(${spin}deg)` }}
                 />
               ))}
               {innerSpins.map((spin) => (
                 <span
                   key={spin}
                   data-petal="true"
-                  data-spin={spin}
-                  className="absolute top-[16%] left-[34%] h-[34%] w-[32%] rounded-full bg-primary-400"
+                  className="absolute top-[16%] left-[34%] h-[34%] w-[32%] origin-bottom rounded-full bg-primary-400"
+                  style={{ transform: `rotate(${spin}deg)` }}
                 />
               ))}
-              <span className="absolute top-1/2 left-1/2 h-[18%] w-[18%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-800" />
-              <span data-bud="true" className="absolute top-[8%] left-[30%] h-[78%] w-[40%] rounded-full bg-primary-700" />
             </div>
           ))}
         </div>

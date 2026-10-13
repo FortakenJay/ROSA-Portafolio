@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Zoomable } from "@/components/zoomable";
 import { Reel } from "@/components/reel";
@@ -27,16 +28,27 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <article className="mx-auto w-full max-w-4xl px-4 pb-8">
-      <h1 className="pb-1 font-display text-5xl leading-[1.1] md:text-6xl">{project.title}</h1>
-      <p className="mt-3 max-w-md border-b-2 border-rose pb-2 font-body text-xl leading-relaxed italic">
+      <Link
+        href="/projects"
+        className="inline-block rounded-full border-2 border-primary-300 bg-primary-200 px-3 py-1.5 font-body text-base leading-none text-ink hover:bg-primary-300 sm:px-5 sm:text-lg"
+      >
+        Back
+      </Link>
+      <h1 data-flow="copy" className="mt-6 pb-1 font-display text-5xl leading-[1.1] md:text-6xl">
+        {project.title}
+      </h1>
+      <p
+        data-flow="copy"
+        className="mt-3 max-w-md border-b-2 border-rose pb-2 font-body text-xl leading-relaxed italic"
+      >
         {project.logline}
       </p>
-      <div className="mt-8">
+      <div data-flow="plate" className="mt-8">
         <Reel frames={project.frames} />
       </div>
       <div className="mt-16 flex flex-col gap-16">
         {project.frames.slice(1).map((frame) => (
-          <figure key={frame.caption}>
+          <figure key={frame.caption} data-flow="plate">
             <Zoomable
               spec={frame}
               label={`Zoom in. ${frame.caption}`}

@@ -15,7 +15,7 @@ const icons = {
 export function SiteFooter() {
   return (
     <footer className="px-4 pt-16 pb-8">
-      <p className="mx-auto max-w-5xl text-center font-body text-base leading-relaxed text-plum">
+      <p data-flow="copy" className="mx-auto max-w-5xl text-center font-body text-base leading-relaxed text-plum">
         Sample portfolio. The pictures and sentences are stand-ins for the real work.
       </p>
       <div className="mx-auto mt-8 flex max-w-5xl flex-col gap-6 border-t-2 border-ink pt-6 sm:flex-row sm:items-end sm:justify-between">

@@ -10,10 +10,10 @@ export default function AboutPage() {
   return (
     <section className="mx-auto flex w-full max-w-xl flex-col items-center px-4 pb-8">
       <h1 className="sr-only">About</h1>
-      <div className="size-56 overflow-hidden rounded-full border-2 border-ink sm:size-64">
+      <div data-flow="plate" className="size-56 overflow-hidden rounded-full border-2 border-ink sm:size-64">
         <Plate spec={aboutPortrait} className="h-full w-full" />
       </div>
-      <div className="mt-10 max-w-prose text-left">
+      <div data-flow="copy" className="mt-10 max-w-prose text-left">
         <p className="font-body text-lg leading-relaxed">
           Rosa draws dresses, rooms, and the people who stand still inside them. The pictures lean
           cute, then go a little gothic: black ribbon, pale fruit, and a candle left on purpose.
