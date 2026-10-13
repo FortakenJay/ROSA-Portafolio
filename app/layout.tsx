@@ -24,6 +24,15 @@ export const metadata: Metadata = {
     template: "%s, Rosa",
   },
   description: "Illustration and project reels. Sample portfolio in a cute gothic lolita mood.",
+  openGraph: {
+    title: "Rosa",
+    description: "Illustration and project reels. Sample portfolio in a cute gothic lolita mood.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rosa",
+    description: "Illustration and project reels. Sample portfolio in a cute gothic lolita mood.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

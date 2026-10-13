@@ -1,16 +1,197 @@
 @import "tailwindcss";
 
+/* Realtime Colors scales: text, background, primary, secondary, accent. */
+
 :root {
-  --paper: #f3e7ee;
-  --lace: #fbf6f8;
-  --ink: #24151c;
-  --plum: #3a2030;
-  --rose: #9e3d56;
-  --blush: #e4c9d4;
+  --text-50: #eae9fc;
+  --text-100: #d6d2f9;
+  --text-200: #ada5f3;
+  --text-300: #8478ed;
+  --text-400: #5b4be7;
+  --text-500: #321fe0;
+  --text-600: #2818b4;
+  --text-700: #1e1287;
+  --text-800: #140c5a;
+  --text-900: #0a062d;
+  --text-950: #050316;
+
+  --background-50: #f8f7ed;
+  --background-100: #f0eedb;
+  --background-200: #e2deb6;
+  --background-300: #d3cd92;
+  --background-400: #c5bc6d;
+  --background-500: #b6ab49;
+  --background-600: #92893a;
+  --background-700: #6d672c;
+  --background-800: #49451d;
+  --background-900: #24220f;
+  --background-950: #121107;
+
+  --primary-50: #fbe9eb;
+  --primary-100: #f8d3d8;
+  --primary-200: #f0a8b0;
+  --primary-300: #e97c89;
+  --primary-400: #e15161;
+  --primary-500: #da253a;
+  --primary-600: #ae1e2e;
+  --primary-700: #831623;
+  --primary-800: #570f17;
+  --primary-900: #2c070c;
+  --primary-950: #160406;
+
+  --secondary-50: #f3f8ed;
+  --secondary-100: #e8f0db;
+  --secondary-200: #d1e1b7;
+  --secondary-300: #bad392;
+  --secondary-400: #a3c46e;
+  --secondary-500: #8cb54a;
+  --secondary-600: #70913b;
+  --secondary-700: #546d2c;
+  --secondary-800: #38481e;
+  --secondary-900: #1c240f;
+  --secondary-950: #0e1207;
+
+  --accent-50: #eff3f5;
+  --accent-100: #dfe7ec;
+  --accent-200: #bfcfd9;
+  --accent-300: #9fb8c6;
+  --accent-400: #80a0b3;
+  --accent-500: #60889f;
+  --accent-600: #4d6d80;
+  --accent-700: #395260;
+  --accent-800: #263640;
+  --accent-900: #131b20;
+  --accent-950: #0a0e10;
+
+  --paper: var(--background-50);
+  --lace: var(--accent-50);
+  --ink: var(--text-950);
+  --plum: var(--text-900);
+  --rose: var(--primary-600);
+  --blush: var(--secondary-100);
   color-scheme: light;
 }
 
+.dark {
+  --text-50: #040316;
+  --text-100: #08062d;
+  --text-200: #100c5a;
+  --text-300: #181287;
+  --text-400: #2018b4;
+  --text-500: #281fe0;
+  --text-600: #534be7;
+  --text-700: #7e78ed;
+  --text-800: #a9a5f3;
+  --text-900: #d4d2f9;
+  --text-950: #eae9fc;
+
+  --background-50: #121107;
+  --background-100: #24220f;
+  --background-200: #49451d;
+  --background-300: #6d672c;
+  --background-400: #92893a;
+  --background-500: #b6ab49;
+  --background-600: #c5bc6d;
+  --background-700: #d3cd92;
+  --background-800: #e2deb6;
+  --background-900: #f0eedb;
+  --background-950: #f8f7ed;
+
+  --primary-50: #160406;
+  --primary-100: #2c070c;
+  --primary-200: #570f17;
+  --primary-300: #831623;
+  --primary-400: #ae1e2e;
+  --primary-500: #da253a;
+  --primary-600: #e15161;
+  --primary-700: #e97c89;
+  --primary-800: #f0a8b0;
+  --primary-900: #f8d3d8;
+  --primary-950: #fbe9eb;
+
+  --secondary-50: #0e1207;
+  --secondary-100: #1c240f;
+  --secondary-200: #38481e;
+  --secondary-300: #546d2c;
+  --secondary-400: #70913b;
+  --secondary-500: #8cb54a;
+  --secondary-600: #a3c46e;
+  --secondary-700: #bad392;
+  --secondary-800: #d1e1b7;
+  --secondary-900: #e8f0db;
+  --secondary-950: #f3f8ed;
+
+  --accent-50: #0a0e10;
+  --accent-100: #131b20;
+  --accent-200: #263640;
+  --accent-300: #395260;
+  --accent-400: #4d6d80;
+  --accent-500: #60889f;
+  --accent-600: #80a0b3;
+  --accent-700: #9fb8c6;
+  --accent-800: #bfcfd9;
+  --accent-900: #dfe7ec;
+  --accent-950: #eff3f5;
+
+  color-scheme: dark;
+}
+
 @theme inline {
+  --color-text-50: var(--text-50);
+  --color-text-100: var(--text-100);
+  --color-text-200: var(--text-200);
+  --color-text-300: var(--text-300);
+  --color-text-400: var(--text-400);
+  --color-text-500: var(--text-500);
+  --color-text-600: var(--text-600);
+  --color-text-700: var(--text-700);
+  --color-text-800: var(--text-800);
+  --color-text-900: var(--text-900);
+  --color-text-950: var(--text-950);
+  --color-background-50: var(--background-50);
+  --color-background-100: var(--background-100);
+  --color-background-200: var(--background-200);
+  --color-background-300: var(--background-300);
+  --color-background-400: var(--background-400);
+  --color-background-500: var(--background-500);
+  --color-background-600: var(--background-600);
+  --color-background-700: var(--background-700);
+  --color-background-800: var(--background-800);
+  --color-background-900: var(--background-900);
+  --color-background-950: var(--background-950);
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  --color-primary-950: var(--primary-950);
+  --color-secondary-50: var(--secondary-50);
+  --color-secondary-100: var(--secondary-100);
+  --color-secondary-200: var(--secondary-200);
+  --color-secondary-300: var(--secondary-300);
+  --color-secondary-400: var(--secondary-400);
+  --color-secondary-500: var(--secondary-500);
+  --color-secondary-600: var(--secondary-600);
+  --color-secondary-700: var(--secondary-700);
+  --color-secondary-800: var(--secondary-800);
+  --color-secondary-900: var(--secondary-900);
+  --color-secondary-950: var(--secondary-950);
+  --color-accent-50: var(--accent-50);
+  --color-accent-100: var(--accent-100);
+  --color-accent-200: var(--accent-200);
+  --color-accent-300: var(--accent-300);
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+  --color-accent-700: var(--accent-700);
+  --color-accent-800: var(--accent-800);
+  --color-accent-900: var(--accent-900);
+  --color-accent-950: var(--accent-950);
   --color-paper: var(--paper);
   --color-lace: var(--lace);
   --color-ink: var(--ink);
@@ -86,6 +267,12 @@ dialog.zoom-dialog {
 
 .reel-stage:fullscreen .reel-frame {
   width: min(1100px, 100%);
+}
+
+/* The curtain is fixed, so the document underneath still has a scrollbar unless this is set. */
+html:has(.curtain),
+html:has(.curtain) body {
+  overflow: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {

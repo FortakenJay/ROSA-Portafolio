@@ -27,7 +27,7 @@ export function SiteHeader() {
           home ? "text-6xl md:text-7xl" : "text-3xl md:text-4xl"
         }`}
       >
-        {home ? <h1 className="leading-[1.1]">Rosa</h1> : <span className="leading-[1.1]">Rosa</span>}
+        {home ? <h1 className="leading-[1.1]">   Rosa Chen Liang </h1> : <span className="leading-[1.1]">Rosa Chen Liang</span>}
       </Link>
       <nav aria-label="Pages" className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
         {links.map((link) => {
@@ -37,8 +37,8 @@ export function SiteHeader() {
               key={link.href}
               href={link.href}
               aria-current={current ? "page" : undefined}
-              className={`rounded-full border-2 border-ink px-3 py-1.5 font-body text-base leading-none transition-colors sm:px-5 sm:text-lg ${
-                current ? "bg-ink text-lace" : "bg-paper text-ink hover:bg-blush"
+              className={`rounded-full border-2 border-primary-300 px-3 py-1.5 font-body text-base leading-none text-ink transition-colors sm:px-5 sm:text-lg ${
+                current ? "bg-primary-300" : "bg-primary-200 hover:bg-primary-300"
               }`}
             >
               {link.label}
