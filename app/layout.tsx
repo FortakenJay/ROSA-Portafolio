@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Petrona, Yeseva_One } from "next/font/google";
+import localFont from "next/font/local";
 import { Curtain } from "@/components/curtain";
 import { ScrollFlow } from "@/components/scroll-flow";
 import { SiteFooter } from "@/components/site-footer";
@@ -7,16 +7,30 @@ import { SiteHeader } from "@/components/site-header";
 import { getSite } from "@/lib/cms";
 import "./globals.css";
 
-const display = Yeseva_One({
+const display = localFont({
+  src: "./fonts/yeseva-one-latin-400.woff2",
   weight: "400",
-  subsets: ["latin"],
+  style: "normal",
+  display: "swap",
+  adjustFontFallback: "Times New Roman",
   variable: "--font-display",
 });
 
-const body = Petrona({
-  weight: ["400", "600"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
+const body = localFont({
+  src: [
+    {
+      path: "./fonts/petrona-latin.woff2",
+      weight: "400 600",
+      style: "normal",
+    },
+    {
+      path: "./fonts/petrona-latin-italic.woff2",
+      weight: "400 600",
+      style: "italic",
+    },
+  ],
+  display: "swap",
+  adjustFontFallback: "Times New Roman",
   variable: "--font-body",
 });
 
