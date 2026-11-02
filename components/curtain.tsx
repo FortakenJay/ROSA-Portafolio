@@ -72,10 +72,7 @@ export function Curtain({ name }: { name: string }) {
     } catch {
       seen = false;
     }
-    if (reduce || seen) {
-      setVisible(false);
-      return;
-    }
+    if (reduce || seen) return;
     const html = document.documentElement;
     const body = document.body;
     const scrollY = window.scrollY;
@@ -126,10 +123,7 @@ export function Curtain({ name }: { name: string }) {
     } catch {
       seen = false;
     }
-    if (!node || !scope || reduce || seen) {
-      setVisible(false);
-      return;
-    }
+    if (!node || !scope || reduce || seen) return;
 
     const context = gsap.context(() => {
       gsap

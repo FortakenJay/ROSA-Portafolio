@@ -1,4 +1,4 @@
-# Lint and a production build. Vercel still deploys main.
+# Lint, input and chaos tests, then a production build. Vercel still deploys main.
 # GitHub repository secrets: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, REVALIDATE_SECRET.
 
 name: CI
@@ -29,6 +29,8 @@ jobs:
       - run: npm ci
 
       - run: npm run lint
+
+      - run: npm test
 
       - run: npm run build
         env:
