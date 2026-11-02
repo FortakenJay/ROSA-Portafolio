@@ -294,9 +294,14 @@ dialog.zoom-dialog {
 }
 
 /* The curtain is fixed, so the document underneath still has a scrollbar unless this is set. */
-html:has(.curtain),
-html:has(.curtain) body {
+html:not([data-curtain="seen"]):has(.curtain),
+html:not([data-curtain="seen"]):has(.curtain) body {
   overflow: hidden;
+}
+
+html[data-curtain="seen"] .curtain,
+html[data-curtain="seen"] .curtain-petals {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

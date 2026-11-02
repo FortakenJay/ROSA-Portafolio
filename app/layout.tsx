@@ -55,8 +55,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const name = site?.name || "Rosa Chen Liang";
 
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} h-full antialiased`}>
+    <html lang="en" className={`${display.variable} ${body.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-dvh flex-col">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem("rosa-curtain")==="seen")document.documentElement.dataset.curtain="seen"}catch(e){}`,
+          }}
+        />
         <Curtain name={name} />
         <ScrollFlow>
           <SiteHeader name={name} />

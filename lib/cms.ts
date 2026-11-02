@@ -112,13 +112,17 @@ export async function getSite(): Promise<SiteContent | null> {
     { name: "Pinterest", href: data.pinterest_url as string },
     { name: "YouTube", href: data.youtube_url as string },
   ].filter((item) => item.href);
+  const [homeImage, aboutImage] = await Promise.all([
+    imageForPath(supabase, data.home_image_path as string | null),
+    imageForPath(supabase, data.about_image_path as string | null),
+  ]);
   return {
     name: data.name as string,
     description: (data.description as string) ?? "",
     homeText: data.home_text as string,
-    homeImage: await imageForPath(supabase, data.home_image_path as string | null),
+    homeImage,
     aboutDescription: data.about_description as string,
-    aboutImage: await imageForPath(supabase, data.about_image_path as string | null),
+    aboutImage,
     email: data.email as string,
     socials,
   };

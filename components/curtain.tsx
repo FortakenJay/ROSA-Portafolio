@@ -65,6 +65,17 @@ export function Curtain({ name }: { name: string }) {
 
   useLayoutEffect(() => {
     if (!visible) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let seen = false;
+    try {
+      seen = window.sessionStorage.getItem("rosa-curtain") === "seen";
+    } catch {
+      seen = false;
+    }
+    if (reduce || seen) {
+      setVisible(false);
+      return;
+    }
     const html = document.documentElement;
     const body = document.body;
     const scrollY = window.scrollY;
