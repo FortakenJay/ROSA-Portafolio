@@ -58,7 +58,7 @@ function tiltOf(_index: number, target: Element) {
   return Number((target as HTMLElement).dataset.tilt);
 }
 
-export function Curtain() {
+export function Curtain({ name }: { name: string }) {
   const scene = useRef<HTMLDivElement>(null);
   const root = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
@@ -109,7 +109,13 @@ export function Curtain() {
     const node = root.current;
     const scope = scene.current;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!node || !scope || reduce) {
+    let seen = false;
+    try {
+      seen = window.sessionStorage.getItem("rosa-curtain") === "seen";
+    } catch {
+      seen = false;
+    }
+    if (!node || !scope || reduce || seen) {
       setVisible(false);
       return;
     }
@@ -119,6 +125,11 @@ export function Curtain() {
         .timeline({
           defaults: { ease: "power3.inOut" },
           onComplete: () => {
+            try {
+              window.sessionStorage.setItem("rosa-curtain", "seen");
+            } catch {
+              // Storage can be blocked. The curtain still closes.
+            }
             setVisible(false);
           },
         })
@@ -193,7 +204,7 @@ export function Curtain() {
           ))}
         </div>
         <p data-curtain-name="true" className="relative z-10 font-display text-6xl leading-[1.1] md:text-7xl">
-          Rosa Chen Liang
+          {name}
         </p>
         <span data-curtain-rule="true" className="relative z-10 mt-4 block h-0.5 w-24 bg-rose" />
       </div>
