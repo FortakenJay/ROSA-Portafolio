@@ -2,17 +2,18 @@
 
 import { CaretLeftIcon, CaretRightIcon, XIcon } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
-import type { GalleryPiece } from "@/lib/content";
+import { ArtworkImage } from "@/components/artwork-image";
 import { Plate } from "@/components/plate";
 import { Zoomable } from "@/components/zoomable";
+import type { Shot } from "@/lib/shots";
 
-export function Gallery({ pieces }: { pieces: GalleryPiece[] }) {
+export function Gallery({ pieces }: { pieces: { title: string; pictures: Shot[] }[] }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [pieceIndex, setPieceIndex] = useState(0);
   const [pictureIndex, setPictureIndex] = useState(0);
   const [openToken, setOpenToken] = useState(0);
-  const piece = pieces[pieceIndex];
-  const picture = piece.pictures[pictureIndex] ?? piece.pictures[0];
+  const piece = pieces[pieceIndex] ?? pieces[0];
+  const picture = piece?.pictures[pictureIndex] ?? piece?.pictures[0];
 
   useEffect(() => {
     const dialogNode = dialog.current;
@@ -57,6 +58,8 @@ export function Gallery({ pieces }: { pieces: GalleryPiece[] }) {
     }
   }
 
+  if (!piece || !picture) return null;
+
   return (
     <>
       <ul className="mx-auto grid max-w-5xl grid-cols-1 items-start gap-8 sm:grid-cols-2">
@@ -73,10 +76,18 @@ export function Gallery({ pieces }: { pieces: GalleryPiece[] }) {
                 setOpenToken((current) => current + 1);
               }}
             >
-              <Plate
-                spec={item.pictures[0]}
-                className="aspect-[16/10] w-full origin-center scale-125 transition-transform duration-700 ease-out group-hover:scale-150 motion-reduce:transition-none motion-reduce:group-hover:scale-125"
-              />
+              {item.pictures[0].kind === "image" ? (
+                <ArtworkImage
+                  image={item.pictures[0].image}
+                  sizes="(min-width: 40rem) 50vw, 100vw"
+                  className="w-full origin-center transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none"
+                />
+              ) : (
+                <Plate
+                  spec={item.pictures[0].spec}
+                  className="aspect-[16/10] w-full origin-center scale-125 transition-transform duration-700 ease-out group-hover:scale-150 motion-reduce:transition-none motion-reduce:group-hover:scale-125"
+                />
+              )}
             </button>
           </li>
         ))}
@@ -104,9 +115,8 @@ export function Gallery({ pieces }: { pieces: GalleryPiece[] }) {
               <CaretLeftIcon weight="light" size={36} aria-hidden="true" />
             </button>
             <Zoomable
-              spec={picture}
+              shot={picture}
               label={`Zoom in on ${piece.title}`}
-              caption={picture.caption}
               className="mx-auto block max-w-full cursor-pointer"
               plateClassName="mx-auto h-auto max-h-[42dvh] w-auto max-w-full border-2 border-ink"
             />

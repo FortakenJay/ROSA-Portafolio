@@ -2,22 +2,21 @@
 
 import { MagnifyingGlassMinusIcon, MagnifyingGlassPlusIcon, XIcon } from "@phosphor-icons/react";
 import { useEffect, useRef, useState } from "react";
-import type { PlateSpec } from "@/lib/content";
+import { ArtworkImage } from "@/components/artwork-image";
 import { Plate } from "@/components/plate";
+import type { Shot } from "@/lib/shots";
 
 const minScale = 1;
 const maxScale = 4;
 
 export function Zoomable({
-  spec,
+  shot,
   label,
-  caption,
   className,
   plateClassName,
 }: {
-  spec: PlateSpec;
+  shot: Shot;
   label: string;
-  caption?: string;
   className?: string;
   plateClassName?: string;
 }) {
@@ -113,7 +112,11 @@ export function Zoomable({
   return (
     <>
       <button type="button" className={className} aria-label={label} onClick={openViewer}>
-        <Plate spec={spec} className={plateClassName} />
+        {shot.kind === "image" ? (
+          <ArtworkImage image={shot.image} sizes="(min-width: 56rem) 56rem, 100vw" className="w-full" />
+        ) : (
+          <Plate spec={shot.spec} className={plateClassName} />
+        )}
       </button>
       <dialog
         ref={dialog}
@@ -163,11 +166,21 @@ export function Zoomable({
             onPointerCancel={onPointerUp}
           >
             <div ref={view} className="w-[min(100%,56rem)]">
-              <Plate spec={spec} className="w-full border-2 border-ink" />
+              {shot.kind === "image" ? (
+                <img
+                  src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/portfolio/${shot.image.variants.lightbox}`}
+                  alt={shot.image.alt}
+                  width={shot.image.width}
+                  height={shot.image.height}
+                  className="w-full border-2 border-ink"
+                />
+              ) : (
+                <Plate spec={shot.spec} className="w-full border-2 border-ink" />
+              )}
             </div>
           </div>
-          {caption ? (
-            <p className="px-4 py-4 text-center font-body text-lg leading-relaxed text-plum">{caption}</p>
+          {shot.caption ? (
+            <p className="px-4 py-4 text-center font-body text-lg leading-relaxed text-plum">{shot.caption}</p>
           ) : null}
         </div>
       </dialog>

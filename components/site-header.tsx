@@ -15,7 +15,7 @@ function isCurrent(pathname: string, href: string) {
   return pathname === href;
 }
 
-export function SiteHeader() {
+export function SiteHeader({ name }: { name: string }) {
   const pathname = usePathname();
   const home = pathname === "/";
 
@@ -27,7 +27,7 @@ export function SiteHeader() {
           home ? "text-6xl md:text-7xl" : "text-3xl md:text-4xl"
         }`}
       >
-        {home ? <h1 className="leading-[1.1]">   Rosa Chen Liang </h1> : <span className="leading-[1.1]">Rosa Chen Liang</span>}
+        {home ? <h1 className="leading-[1.1]">{name}</h1> : <span className="leading-[1.1]">{name}</span>}
       </Link>
       <nav aria-label="Pages" className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
         {links.map((link) => {

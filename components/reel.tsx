@@ -4,10 +4,11 @@ import { ArrowsInIcon, ArrowsOutIcon, PauseIcon, PlayIcon } from "@phosphor-icon
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { Picture } from "@/lib/content";
+import { ArtworkImage } from "@/components/artwork-image";
 import { Plate } from "@/components/plate";
+import type { Shot } from "@/lib/shots";
 
-export function Reel({ frames }: { frames: Picture[] }) {
+export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: boolean }) {
   const stage = useRef<HTMLDivElement>(null);
   const idle = useRef<number | null>(null);
   const held = useRef(false);
@@ -148,10 +149,16 @@ export function Reel({ frames }: { frames: Picture[] }) {
     setPlaying((current) => !current);
   }
 
+  if (!frame) return null;
+
   const stageView = (
     <div ref={stage} className={`reel-stage relative border-2 border-ink p-1.5 ${open ? "is-open" : ""}`}>
       <div className="reel-frame relative border-2 border-ink" onPointerMove={showControls}>
-        <Plate spec={frame} className="aspect-video w-full" />
+        {frame.kind === "image" ? (
+          <ArtworkImage image={frame.image} sizes="(min-width: 56rem) 56rem, 100vw" priority={priority && index === 0} className="w-full" />
+        ) : (
+          <Plate spec={frame.spec} className="aspect-video w-full" />
+        )}
         <button
           type="button"
           onClick={onPlay}

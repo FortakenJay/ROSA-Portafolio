@@ -4,6 +4,7 @@ import { Curtain } from "@/components/curtain";
 import { ScrollFlow } from "@/components/scroll-flow";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { getSite } from "@/lib/cms";
 import "./globals.css";
 
 const display = Yeseva_One({
@@ -19,32 +20,34 @@ const body = Petrona({
   variable: "--font-body",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Rosa Chen Liang Portfolio",
-    template: "%s, Rosa Chen Liang Portfolio",
-  },
-  description: "Illustration and project reels. Sample portfolio in a cute gothic lolita mood.",
-  openGraph: {
-    title: "Rosa Chen Liang Portfolio",
-    description: "Illustration and project reels. Sample portfolio in a cute gothic lolita mood.",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Rosa Chen Liang Portfolio",
-    description: "Illustration and project reels. Sample portfolio in a cute gothic lolita mood.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getSite();
+  const name = site?.name || "Rosa Chen Liang";
+  const description = site?.description || "";
+  return {
+    title: {
+      default: name,
+      template: `%s, ${name}`,
+    },
+    metadataBase: new URL("https://rosachenliang.com"),
+    description,
+    openGraph: { title: name, description },
+    twitter: { card: "summary_large_image", title: name, description },
+  };
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const site = await getSite();
+  const name = site?.name || "Rosa Chen Liang";
+
   return (
     <html lang="en" className={`${display.variable} ${body.variable} h-full antialiased`}>
       <body className="flex min-h-dvh flex-col">
-        <Curtain />
+        <Curtain name={name} />
         <ScrollFlow>
-          <SiteHeader />
+          <SiteHeader name={name} />
           <main className="flex-1">{children}</main>
-          <SiteFooter />
+          <SiteFooter site={site} />
         </ScrollFlow>
       </body>
     </html>

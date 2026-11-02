@@ -1,10 +1,14 @@
 import { ImageResponse } from "next/og";
+import { getSite } from "@/lib/cms";
 
-export const alt = "Rosa. Illustration and project reels. Sample portfolio in a cute gothic lolita mood.";
+export const alt = "Rosa Chen Liang";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function Image() {
+export default async function Image() {
+  const site = await getSite();
+  const name = site?.name || "Rosa Chen Liang";
+  const description = site?.description || "";
   return new ImageResponse(
     (
       <div
@@ -19,7 +23,7 @@ export default function Image() {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", width: 560 }}>
-          <div style={{ fontSize: 96, lineHeight: 1 }}>Rosa</div>
+          <div style={{ fontSize: 96, lineHeight: 1 }}>{name}</div>
           <div
             style={{
               marginTop: 28,
@@ -28,9 +32,7 @@ export default function Image() {
               background: "#f0a8b0",
             }}
           />
-          <div style={{ marginTop: 28, fontSize: 32, lineHeight: 1.35 }}>
-            Illustration and project reels. Sample portfolio in a cute gothic lolita mood.
-          </div>
+          {description ? <div style={{ marginTop: 28, fontSize: 32, lineHeight: 1.35 }}>{description}</div> : null}
         </div>
         <div
           style={{

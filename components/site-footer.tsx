@@ -4,6 +4,7 @@ import {
   PinterestLogoIcon,
   YoutubeLogoIcon,
 } from "@phosphor-icons/react/ssr";
+import { devStandIns, type SiteContent } from "@/lib/cms";
 import { contact } from "@/lib/content";
 
 const icons = {
@@ -12,25 +13,26 @@ const icons = {
   YouTube: YoutubeLogoIcon,
 };
 
-export function SiteFooter() {
+export function SiteFooter({ site }: { site: SiteContent | null }) {
+  const standIn = !site && devStandIns();
+  const email = site?.email || (standIn ? contact.email : "");
+  const socials = site ? site.socials : standIn ? contact.socials : [];
+
   return (
     <footer className="px-4 pt-16 pb-8">
-      <p data-flow="copy" className="mx-auto max-w-5xl text-center font-body text-base leading-relaxed text-plum">
-        Sample portfolio. The pictures and sentences are stand-ins for the real work.
-      </p>
-      <div className="mx-auto mt-8 flex max-w-5xl flex-col gap-6 border-t-2 border-ink pt-6 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mx-auto flex max-w-5xl flex-col gap-6 border-t-2 border-ink pt-6 sm:flex-row sm:items-end sm:justify-between">
         <p className="font-body text-base text-ink">© 2026 Rosa</p>
         <div className="sm:text-right">
-          <a
-            href={`mailto:${contact.email}`}
-            className="inline-flex items-center gap-2 font-body text-base text-ink"
-          >
-            <EnvelopeSimpleIcon weight="light" size={22} aria-hidden="true" />
-            {contact.email}
-          </a>
+          {email ? (
+            <a href={`mailto:${email}`} className="inline-flex items-center gap-2 font-body text-base text-ink">
+              <EnvelopeSimpleIcon weight="light" size={22} aria-hidden="true" />
+              {email}
+            </a>
+          ) : null}
           <ul className="mt-3 flex gap-2 sm:justify-end">
-            {contact.socials.map((social) => {
+            {socials.map((social) => {
               const Icon = icons[social.name as keyof typeof icons];
+              if (!Icon) return null;
               return (
                 <li key={social.name}>
                   <a
