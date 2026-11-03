@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Curtain } from "@/components/curtain";
+import { QueryProvider } from "@/components/query-provider";
+import { RoutePreview } from "@/components/route-preview";
 import { ScrollFlow } from "@/components/scroll-flow";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -62,12 +64,16 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             __html: `try{if(sessionStorage.getItem("rosa-curtain")==="seen")document.documentElement.dataset.curtain="seen"}catch(e){}`,
           }}
         />
-        <Curtain name={name} />
-        <ScrollFlow>
-          <SiteHeader name={name} />
-          <main className="flex-1">{children}</main>
-          <SiteFooter site={site} />
-        </ScrollFlow>
+        <QueryProvider>
+          <Curtain name={name} />
+          <ScrollFlow>
+            <SiteHeader name={name} />
+            <main className="flex-1">
+              <RoutePreview>{children}</RoutePreview>
+            </main>
+            <SiteFooter site={site} />
+          </ScrollFlow>
+        </QueryProvider>
       </body>
     </html>
   );

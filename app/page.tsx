@@ -1,42 +1,29 @@
-import Link from "next/link";
-import { ArtworkImage } from "@/components/artwork-image";
-import { Plate } from "@/components/plate";
+import { HomeView, type HomeModel } from "@/components/home-view";
+import { Remember } from "@/components/remember";
 import { devStandIns, getSite } from "@/lib/cms";
 import { projects } from "@/lib/content";
+import { keyForPath } from "@/lib/page-cache";
 
 export default async function Home() {
   const site = await getSite();
   const featured = projects[0];
-  const image = site?.homeImage;
-
+  const home: HomeModel = {
+    image: site?.homeImage ?? null,
+    homeText: site?.homeText ?? "",
+    standIn:
+      !site?.homeImage && devStandIns()
+        ? {
+            slug: featured.slug,
+            title: featured.title,
+            logline: featured.logline,
+            frame: { motif: featured.frames[0].motif, palette: featured.frames[0].palette, flip: featured.frames[0].flip },
+          }
+        : null,
+  };
   return (
-    <section className="mx-auto w-full max-w-4xl px-4 pb-8">
-      {image ? (
-        <div data-flow="plate" className="overflow-hidden border-2 border-ink">
-          <ArtworkImage image={image} sizes="(min-width: 56rem) 56rem, 100vw" priority className="w-full" />
-        </div>
-      ) : devStandIns() ? (
-        <Link
-          href={`/projects/${featured.slug}`}
-          aria-label={`${featured.title}. ${featured.logline}`}
-          data-flow="plate"
-          className="group block"
-        >
-          <div className="border-2 border-ink p-1.5 transition-colors duration-500 group-hover:border-rose">
-            <div className="overflow-hidden border-2 border-ink transition-colors duration-500 group-hover:border-rose">
-              <Plate
-                spec={featured.frames[0]}
-                className="aspect-[16/10] w-full origin-center transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-              />
-            </div>
-          </div>
-        </Link>
-      ) : null}
-      {site?.homeText ? (
-        <p data-flow="copy" className="mt-6 max-w-xl font-body text-xl leading-relaxed">
-          {site.homeText}
-        </p>
-      ) : null}
-    </section>
+    <>
+      <Remember queryKey={keyForPath("/") ?? ["rosa", "home"]} data={home} />
+      <HomeView home={home} />
+    </>
   );
 }

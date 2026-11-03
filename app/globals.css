@@ -304,6 +304,23 @@ html[data-curtain="seen"] .curtain-petals {
   display: none;
 }
 
+.page-skeleton {
+  border: 2px solid var(--ink);
+  background: color-mix(in srgb, var(--primary-200) 70%, var(--paper));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .page-skeleton {
+    animation: page-skeleton-pulse 1.2s ease-in-out infinite;
+  }
+}
+
+@keyframes page-skeleton-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .curtain,
   .curtain-petals,

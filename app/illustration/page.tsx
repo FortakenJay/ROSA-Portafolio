@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import { Gallery } from "@/components/gallery";
+import { IllustrationView, type IllustrationModel } from "@/components/illustration-view";
+import { Remember } from "@/components/remember";
 import { devStandIns, getIllustrations } from "@/lib/cms";
 import { gallery } from "@/lib/content";
+import { keyForPath } from "@/lib/page-cache";
 import type { Shot } from "@/lib/shots";
 
 const standInPieces = gallery.map((piece) => ({
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
 
 export default async function IllustrationPage() {
   const fromDatabase = await getIllustrations();
-  const pieces =
+  const pieces: IllustrationModel["pieces"] =
     fromDatabase.length > 0
       ? fromDatabase.flatMap((item) => {
           const pictures: Shot[] = item.pictures.map((picture) => ({
@@ -28,11 +30,12 @@ export default async function IllustrationPage() {
       : devStandIns()
         ? standInPieces
         : [];
+  const illustration = { pieces };
 
   return (
-    <section className="mx-auto w-full max-w-5xl px-4 pb-8">
-      <h1 className="sr-only">Illustration</h1>
-      {pieces.length > 0 ? <Gallery pieces={pieces} /> : <p className="font-body text-xl leading-relaxed">New work soon.</p>}
-    </section>
+    <>
+      <Remember queryKey={keyForPath("/illustration") ?? ["rosa", "illustrations"]} data={illustration} />
+      <IllustrationView illustration={illustration} />
+    </>
   );
 }
