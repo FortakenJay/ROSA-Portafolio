@@ -37,8 +37,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const project: ProjectModel = {
     title: fromDatabase?.title ?? standIn?.title ?? "",
     logline: fromDatabase?.subheading ?? standIn?.logline ?? "",
+    cover: fromDatabase?.cover ? { kind: "image", image: fromDatabase.cover, caption: "" } : null,
     shots: fromDatabase
-      ? fromDatabase.images.map((item) => ({ kind: "image", image: item.image, caption: item.caption }))
+      ? fromDatabase.images
+          .filter((item) => item.image.id !== fromDatabase.cover?.id)
+          .map((item) => ({ kind: "image" as const, image: item.image, caption: item.caption }))
       : (standIn?.frames ?? []).map((frame): Shot => ({ kind: "plate", spec: frame, caption: frame.caption })),
     sections: (fromDatabase?.sections ?? []).map((section) => ({
       title: section.title,

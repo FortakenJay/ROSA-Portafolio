@@ -38,6 +38,7 @@ export type CmsProject = {
   subheading: string;
   images: CmsPicture[];
   sections: CmsSection[];
+  cover: CmsImage | null;
 };
 
 export type CmsIllustration = {
@@ -86,6 +87,11 @@ function asImage(row: Record<string, unknown> | null): CmsImage | null {
     dominantColor: (row.dominant_color as string | null) ?? null,
     variants,
   };
+}
+
+function coverRow(value: unknown) {
+  if (Array.isArray(value)) return (value[0] as Record<string, unknown> | undefined) ?? null;
+  return (value as Record<string, unknown> | null) ?? null;
 }
 
 function picturesOf(rows: unknown): CmsPicture[] {
@@ -152,7 +158,7 @@ export async function getProjects(): Promise<CmsProject[]> {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("projects")
-    .select("slug, title, subheading, project_images(caption, sort, image:images(*))")
+    .select("slug, title, subheading, cover:images!projects_cover_image_id_fkey(*), project_images(caption, sort, image:images(*))")
     .not("published_at", "is", null)
     .order("sort");
   if (error) {
@@ -165,6 +171,7 @@ export async function getProjects(): Promise<CmsProject[]> {
     subheading: row.subheading as string,
     images: picturesOf(row.project_images),
     sections: [],
+    cover: asImage(coverRow(row.cover)),
   }));
 }
 
@@ -176,7 +183,7 @@ export async function getProject(slug: string): Promise<CmsProject | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("projects")
-    .select("slug, title, subheading, project_images(caption, sort, section_id, image:images(*)), project_sections(id, title, sort)")
+    .select("slug, title, subheading, cover:images!projects_cover_image_id_fkey(*), project_images(caption, sort, section_id, image:images(*)), project_sections(id, title, sort)")
     .eq("slug", slug)
     .not("published_at", "is", null)
     .maybeSingle();
@@ -191,6 +198,7 @@ export async function getProject(slug: string): Promise<CmsProject | null> {
     slug: data.slug as string,
     title: data.title as string,
     subheading: data.subheading as string,
+    cover: asImage(coverRow(data.cover)),
     images: picturesOf(joins.filter((row) => !(row as { section_id?: string | null }).section_id)),
     sections: sectionRows
       .map((section) => section as { id: string; title: string; sort?: number })

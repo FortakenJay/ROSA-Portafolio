@@ -24,7 +24,7 @@ export default async function ProjectsPage() {
         slug: project.slug,
         title: project.title,
         logline: project.subheading,
-        image: project.images[0]?.image ?? null,
+        image: project.cover ?? project.images[0]?.image ?? null,
         frame: null,
       }));
 

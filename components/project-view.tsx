@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArtworkImage } from "@/components/artwork-image";
 import { Reel } from "@/components/reel";
 import { Zoomable } from "@/components/zoomable";
 import type { Shot } from "@/lib/shots";
@@ -10,6 +11,7 @@ export type ProjectModel = {
   logline: string;
   shots: Shot[];
   sections: { title: string; shots: Shot[] }[];
+  cover: Shot | null;
 };
 
 export function ProjectView({ project }: { project: ProjectModel }) {
@@ -27,6 +29,11 @@ export function ProjectView({ project }: { project: ProjectModel }) {
       <p data-flow="copy" className="mt-3 max-w-md border-b-2 border-rose pb-2 font-body text-xl leading-relaxed italic">
         {project.logline}
       </p>
+      {project.cover?.kind === "image" ? (
+        <div data-flow="plate" className="mt-8 overflow-hidden border-2 border-ink">
+          <ArtworkImage image={project.cover.image} sizes="(min-width: 56rem) 56rem, 100vw" priority className="w-full" />
+        </div>
+      ) : null}
       {project.shots.length > 0 ? (
         <div data-flow="plate" className="mt-8">
           <Reel frames={project.shots} priority />
