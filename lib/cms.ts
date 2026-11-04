@@ -105,14 +105,26 @@ function picturesOf(rows: unknown): CmsPicture[] {
     });
 }
 
-async function imageForPath(supabase: SupabaseClient, path: string | null) {
-  if (!path) return null;
-  const { data, error } = await supabase.from("images").select(IMAGE_FIELDS).eq("original_path", path).maybeSingle();
+async function imagesForPaths(supabase: SupabaseClient, paths: Array<string | null>) {
+  const wanted = [...new Set(paths.filter((path): path is string => Boolean(path)))];
+  const found = new Map<string, CmsImage>();
+  if (wanted.length === 0) return found;
+  const { data, error } = await supabase.from("images").select(`${IMAGE_FIELDS}, original_path`).in("original_path", wanted);
   if (error) {
     console.error(error.message);
     throw new Error("The portfolio could not be loaded.");
   }
-  return asImage(data as Record<string, unknown> | null);
+  const rows = (data ?? []) as Array<Record<string, unknown>>;
+  for (const path of wanted) {
+    const matches = rows.filter((row) => row.original_path === path);
+    if (matches.length > 1) {
+      console.error(`More than one picture is stored at ${path}.`);
+      throw new Error("The portfolio could not be loaded.");
+    }
+    const image = asImage(matches[0] ?? null);
+    if (image) found.set(path, image);
+  }
+  return found;
 }
 
 export async function getSite(): Promise<SiteContent | null> {
@@ -133,10 +145,9 @@ export async function getSite(): Promise<SiteContent | null> {
     { name: "YouTube", href: data.youtube_url as string },
     { name: "Linktree", href: data.linktree_url as string },
   ].filter((item) => item.href);
-  const [homeImage, aboutImage] = await Promise.all([
-    imageForPath(supabase, data.home_image_path as string | null),
-    imageForPath(supabase, data.about_image_path as string | null),
-  ]);
+  const pictures = await imagesForPaths(supabase, [data.home_image_path as string | null, data.about_image_path as string | null]);
+  const homeImage = data.home_image_path ? (pictures.get(data.home_image_path as string) ?? null) : null;
+  const aboutImage = data.about_image_path ? (pictures.get(data.about_image_path as string) ?? null) : null;
   return {
     name: data.name as string,
     description: (data.description as string) ?? "",
