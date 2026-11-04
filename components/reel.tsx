@@ -2,24 +2,19 @@
 
 import { ArrowsInIcon, ArrowsOutIcon, PauseIcon, PlayIcon } from "@phosphor-icons/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { ArtworkImage } from "@/components/artwork-image";
 import { Plate } from "@/components/plate";
 import type { Shot } from "@/lib/shots";
 
-export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: boolean }) {
+function useReelChrome() {
   const stage = useRef<HTMLDivElement>(null);
   const idle = useRef<number | null>(null);
   const held = useRef(false);
   const fromPointer = useRef(false);
-  const [index, setIndex] = useState(0);
-  const [playing, setPlaying] = useState(false);
   const [full, setFull] = useState(false);
   const [open, setOpen] = useState(false);
   const [lit, setLit] = useState(true);
-  const expanded = full || open;
-  const frame = frames[index];
 
   function clearIdle() {
     if (idle.current === null) return;
@@ -58,14 +53,9 @@ export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: 
     fadeLater();
   }
 
-  function plateOf(node: HTMLElement) {
-    const plate = node.closest("[data-flow='plate']");
-    return plate instanceof HTMLElement ? plate : null;
-  }
-
   function restorePlate(node: HTMLElement) {
-    const plate = plateOf(node);
-    if (!plate) return;
+    const plate = node.closest("[data-flow='plate']");
+    if (!(plate instanceof HTMLElement)) return;
     plate.style.transform = "";
     ScrollTrigger.refresh();
   }
@@ -98,6 +88,11 @@ export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: 
     };
   }, [open]);
 
+  useEffect(() => {
+    fadeLater();
+    return clearIdle;
+  }, []);
+
   async function toggleFull() {
     const node = stage.current;
     if (!node) return;
@@ -114,8 +109,8 @@ export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: 
       }
       return;
     }
-    const plate = plateOf(node);
-    if (plate) plate.style.transform = "none";
+    const plate = node.closest("[data-flow='plate']");
+    if (plate instanceof HTMLElement) plate.style.transform = "none";
     try {
       await node.requestFullscreen();
     } catch {
@@ -125,10 +120,15 @@ export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: 
     }
   }
 
-  useEffect(() => {
-    fadeLater();
-    return clearIdle;
-  }, []);
+  return { stage, full, open, lit, showControls, holdControls, notePointer, releaseControls, toggleFull };
+}
+
+export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: boolean }) {
+  const chrome = useReelChrome();
+  const [index, setIndex] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const expanded = chrome.full || chrome.open;
+  const frame = frames[index];
 
   useEffect(() => {
     if (!playing) return;
@@ -150,62 +150,96 @@ export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: 
   }
 
   if (!frame) return null;
-
   const stageView = (
-    <div ref={stage} className={`reel-stage relative border-2 border-ink p-1.5 ${open ? "is-open" : ""}`}>
-      <div className="reel-frame relative border-2 border-ink" onPointerMove={showControls}>
-        {frame.kind === "image" ? (
-          <ArtworkImage
-            image={frame.image}
-            sizes="(min-width: 56rem) 56rem, 100vw"
-            priority={priority && index === 0}
-            controls={Boolean(frame.image.variants.video)}
-            className="w-full"
-          />
-        ) : (
-          <Plate spec={frame.spec} className="aspect-video w-full" />
-        )}
-        {frame.kind === "image" && frame.image.variants.video ? null : (
-        <button
-          type="button"
-          onClick={onPlay}
-          onPointerDown={notePointer}
-          onFocus={holdControls}
-          onBlur={releaseControls}
-          aria-pressed={playing}
-          aria-label={playing ? "Pause reel" : "Play reel"}
-          className={`absolute top-1/2 left-1/2 z-10 grid size-16 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full border-2 border-ink bg-lace text-ink transition-opacity duration-500 hover:bg-rose hover:text-lace motion-reduce:transition-none ${lit ? "opacity-100" : "pointer-events-none opacity-0"}`}
-        >
-          {playing ? (
-            <PauseIcon weight="light" size={28} aria-hidden="true" />
-          ) : (
-            <PlayIcon weight="light" size={28} aria-hidden="true" />
-          )}
-        </button>
-        )}
-        <button
-          type="button"
-          onClick={toggleFull}
-          onPointerDown={notePointer}
-          aria-label={expanded ? "Exit full screen" : "Full screen"}
-          onFocus={holdControls}
-          onBlur={releaseControls}
-          className={`absolute right-3 bottom-3 z-10 grid size-11 cursor-pointer place-items-center border-2 border-ink bg-lace text-ink transition-opacity duration-500 hover:bg-ink hover:text-lace motion-reduce:transition-none ${lit ? "opacity-100" : "pointer-events-none opacity-0"}`}
-        >
-          {expanded ? (
-            <ArrowsInIcon weight="light" size={22} aria-hidden="true" />
-          ) : (
-            <ArrowsOutIcon weight="light" size={22} aria-hidden="true" />
-          )}
-        </button>
-      </div>
-    </div>
+    <ReelStage
+      stage={chrome.stage}
+      open={chrome.open}
+      lit={chrome.lit}
+      expanded={expanded}
+      frame={frame}
+      priority={priority && index === 0}
+      playing={playing}
+      onPlay={onPlay}
+      onPointer={chrome.notePointer}
+      onFocus={chrome.holdControls}
+      onBlur={chrome.releaseControls}
+      onMove={chrome.showControls}
+      onFull={chrome.toggleFull}
+    />
   );
 
   return (
     <figure>
-      {open ? createPortal(stageView, document.body) : stageView}
+      {stageView}
       <figcaption className="mt-3 font-body text-lg leading-relaxed text-plum">{frame.caption}</figcaption>
     </figure>
+  );
+}
+
+function ReelStage({
+  stage,
+  open,
+  lit,
+  expanded,
+  frame,
+  priority,
+  playing,
+  onPlay,
+  onPointer,
+  onFocus,
+  onBlur,
+  onMove,
+  onFull,
+}: {
+  stage: RefObject<HTMLDivElement | null>;
+  open: boolean;
+  lit: boolean;
+  expanded: boolean;
+  frame: Shot;
+  priority: boolean;
+  playing: boolean;
+  onPlay: () => void;
+  onPointer: () => void;
+  onFocus: () => void;
+  onBlur: () => void;
+  onMove: () => void;
+  onFull: () => void;
+}) {
+  const video = frame.kind === "image" && Boolean(frame.image.variants.video);
+  return (
+    <div ref={stage} className={`reel-stage relative border-2 border-ink p-1.5 ${open ? "is-open" : ""}`}>
+      <div className="reel-frame relative border-2 border-ink" onPointerMove={onMove}>
+        {frame.kind === "image" ? (
+          <ArtworkImage image={frame.image} sizes="(min-width: 56rem) 56rem, 100vw" priority={priority} controls={video} className="w-full" />
+        ) : (
+          <Plate spec={frame.spec} className="aspect-video w-full" />
+        )}
+        {video ? null : (
+          <button
+            type="button"
+            onClick={onPlay}
+            onPointerDown={onPointer}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            aria-pressed={playing}
+            aria-label={playing ? "Pause reel" : "Play reel"}
+            className={`absolute top-1/2 left-1/2 z-10 grid size-16 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full border-2 border-ink bg-lace text-ink transition-opacity duration-500 hover:bg-rose hover:text-lace motion-reduce:transition-none ${lit ? "opacity-100" : "pointer-events-none opacity-0"}`}
+          >
+            {playing ? <PauseIcon weight="light" size={28} aria-hidden="true" /> : <PlayIcon weight="light" size={28} aria-hidden="true" />}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={onFull}
+          onPointerDown={onPointer}
+          aria-label={expanded ? "Exit full screen" : "Full screen"}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          className={`absolute right-3 bottom-3 z-10 grid size-11 cursor-pointer place-items-center border-2 border-ink bg-lace text-ink transition-opacity duration-500 hover:bg-ink hover:text-lace motion-reduce:transition-none ${lit ? "opacity-100" : "pointer-events-none opacity-0"}`}
+        >
+          {expanded ? <ArrowsInIcon weight="light" size={22} aria-hidden="true" /> : <ArrowsOutIcon weight="light" size={22} aria-hidden="true" />}
+        </button>
+      </div>
+    </div>
   );
 }
