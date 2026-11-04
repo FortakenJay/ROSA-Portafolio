@@ -50,6 +50,8 @@ export function devStandIns() {
   return process.env.NODE_ENV === "development" && !process.env.NEXT_PUBLIC_SUPABASE_URL;
 }
 
+const IMAGE_FIELDS = "id, processing_status, variants, width, height, alt_text, thumbhash, dominant_color";
+
 function reader() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -99,7 +101,7 @@ function picturesOf(rows: unknown): CmsPicture[] {
 
 async function imageForPath(supabase: SupabaseClient, path: string | null) {
   if (!path) return null;
-  const { data, error } = await supabase.from("images").select("*").eq("original_path", path).maybeSingle();
+  const { data, error } = await supabase.from("images").select(IMAGE_FIELDS).eq("original_path", path).maybeSingle();
   if (error) {
     console.error(error.message);
     throw new Error("The portfolio could not be loaded.");
@@ -149,7 +151,7 @@ export async function getProjects(): Promise<CmsProject[]> {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("projects")
-    .select("slug, title, subheading, project_images(caption, sort, image:images(*))")
+    .select(`slug, title, subheading, project_images(caption, sort, image:images(${IMAGE_FIELDS}))`)
     .not("published_at", "is", null)
     .order("sort");
   if (error) {
@@ -173,7 +175,7 @@ export async function getProject(slug: string): Promise<CmsProject | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("projects")
-    .select("slug, title, subheading, project_images(caption, sort, section_id, image:images(*)), project_sections(id, title, sort)")
+    .select(`slug, title, subheading, project_images(caption, sort, section_id, image:images(${IMAGE_FIELDS})), project_sections(id, title, sort)`)
     .eq("slug", slug)
     .not("published_at", "is", null)
     .maybeSingle();
@@ -207,7 +209,7 @@ export async function getIllustrations(): Promise<CmsIllustration[]> {
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("illustrations")
-    .select("title, caption, illustration_images(caption, sort, image:images(*))")
+    .select(`title, caption, illustration_images(caption, sort, image:images(${IMAGE_FIELDS}))`)
     .not("published_at", "is", null)
     .order("sort");
   if (error) {
