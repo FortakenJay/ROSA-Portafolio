@@ -402,7 +402,7 @@ html[data-look="creepy"] {
   --scratch: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 12' preserveAspectRatio='none'><path d='M1 4.4C22 3.1 38 6.2 64 3.8 98 0.8 112 6.4 148 4.1 176 2.4 198 5.6 239 3.5' fill='none' stroke='%23e6ddd2' stroke-width='0.8' stroke-linecap='round'/><path d='M16 7.2C42 8.1 58 5.4 92 7.4 128 9.4 146 5.2 184 7.1 206 8.2 220 6.2 232 7.4' fill='none' stroke='%23e6ddd2' stroke-width='0.45' stroke-linecap='round' opacity='0.75'/></svg>");
 }
 
-html[data-look="creepy"] .nav-pill,
+html[data-look="creepy"] .nav-link,
 html[data-look="creepy"] .border-b-2,
 html[data-look="creepy"] .border-t-2,
 html[data-look="creepy"] [data-curtain-rule] {
@@ -415,16 +415,17 @@ html[data-look="creepy"] [data-curtain-rule] {
   background-size: 100% 10px;
 }
 
-html[data-look="creepy"] .nav-pill {
+html[data-look="creepy"] .nav-link {
   border-width: 0;
   padding-bottom: 0.7rem;
   font-size: 0.78rem;
   letter-spacing: 0.16em;
+  text-decoration: none;
   text-transform: uppercase;
 }
 
 @media (width < 40rem) {
-  html[data-look="creepy"] .nav-pill {
+  html[data-look="creepy"] .nav-link {
     padding-right: 0.4rem;
     padding-left: 0.4rem;
     font-size: 0.7rem;
@@ -432,7 +433,7 @@ html[data-look="creepy"] .nav-pill {
   }
 }
 
-html[data-look="creepy"] .nav-pill[aria-current="page"] {
+html[data-look="creepy"] .nav-link[aria-current="page"] {
   background-size: 112% 12px;
 }
 
@@ -455,20 +456,21 @@ html[data-look="creepy"] .border-t-2 {
   background-position: center top;
 }
 
-html[data-look="creepy"] .border-2:not(.nav-pill) {
+html[data-look="creepy"] .border-2:not(.nav-link) {
   border-width: 1px;
   border-color: #cfc4b4;
   border-radius: 0;
 }
 
-html[data-look="creepy"] .nav-pill,
+html[data-look="creepy"] .nav-link,
 html[data-look="creepy"] .border-b-2,
 html[data-look="creepy"] .border-t-2 {
   border-color: transparent;
 }
 
-html[data-look="creepy"] .nav-pill:hover {
+html[data-look="creepy"] .nav-link:hover {
   background-color: transparent;
+  color: #f3ebe3;
 }
 
 @media (prefers-reduced-motion: no-preference) {

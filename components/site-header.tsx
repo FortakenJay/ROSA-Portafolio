@@ -22,7 +22,7 @@ export function SiteHeader({ name }: { name: string }) {
 
   return (
     <header className="mx-auto flex w-full max-w-5xl flex-col items-center px-4 pt-8 pb-6">
-      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+      <div className="flex max-w-full flex-wrap items-center justify-center gap-x-4 gap-y-2">
         <Link
           href="/"
           className={`logo-link font-display text-ink transition-[font-size] duration-500 ease-out ${
@@ -33,7 +33,7 @@ export function SiteHeader({ name }: { name: string }) {
         </Link>
         <LookSwitch />
       </div>
-      <nav aria-label="Pages" className="mt-5 flex flex-wrap items-center justify-center gap-1.5 sm:gap-3">
+      <nav aria-label="Pages" className="mt-4 flex max-w-full flex-wrap items-center justify-center gap-x-2 sm:mt-5 sm:gap-x-6">
         {links.map((link) => {
           const current = isCurrent(pathname, link.href);
           return (
@@ -41,9 +41,7 @@ export function SiteHeader({ name }: { name: string }) {
               key={link.href}
               href={link.href}
               aria-current={current ? "page" : undefined}
-              className={`nav-pill rounded-full border-2 border-primary-300 px-2 py-1.5 font-body text-base leading-none text-ink transition duration-300 sm:px-5 sm:text-lg ${
-                current ? "bg-primary-300" : "bg-primary-200 hover:-translate-y-0.5 hover:bg-primary-300 motion-reduce:hover:translate-y-0"
-              }`}
+              className="nav-link inline-flex min-h-11 items-center font-body text-base leading-none text-ink underline-offset-8 transition-colors duration-300 hover:text-rose aria-[current=page]:underline aria-[current=page]:decoration-2 sm:text-lg"
             >
               {link.label}
             </Link>
