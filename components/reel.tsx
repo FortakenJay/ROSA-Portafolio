@@ -155,10 +155,17 @@ export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: 
     <div ref={stage} className={`reel-stage relative border-2 border-ink p-1.5 ${open ? "is-open" : ""}`}>
       <div className="reel-frame relative border-2 border-ink" onPointerMove={showControls}>
         {frame.kind === "image" ? (
-          <ArtworkImage image={frame.image} sizes="(min-width: 56rem) 56rem, 100vw" priority={priority && index === 0} className="w-full" />
+          <ArtworkImage
+            image={frame.image}
+            sizes="(min-width: 56rem) 56rem, 100vw"
+            priority={priority && index === 0}
+            controls={Boolean(frame.image.variants.video)}
+            className="w-full"
+          />
         ) : (
           <Plate spec={frame.spec} className="aspect-video w-full" />
         )}
+        {frame.kind === "image" && frame.image.variants.video ? null : (
         <button
           type="button"
           onClick={onPlay}
@@ -175,6 +182,7 @@ export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: 
             <PlayIcon weight="light" size={28} aria-hidden="true" />
           )}
         </button>
+        )}
         <button
           type="button"
           onClick={toggleFull}

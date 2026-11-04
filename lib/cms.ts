@@ -14,6 +14,7 @@ export type CmsImage = {
     webp: Record<string, string>;
     lightbox: string;
     video?: string;
+    poster?: string;
   };
 };
 
@@ -72,7 +73,14 @@ function asImage(row: Record<string, unknown> | null): CmsImage | null {
       alt: String(row.alt_text ?? ""),
       thumbhash: null,
       dominantColor: null,
-      variants: { widths: [], avif: {}, webp: {}, lightbox: "", video: variants.video },
+      variants: {
+        widths: [],
+        avif: {},
+        webp: {},
+        lightbox: "",
+        video: variants.video,
+        poster: typeof variants.poster === "string" ? variants.poster : undefined,
+      },
     };
   }
   if (!variants?.widths?.length || !variants.webp || !variants.avif || !variants.lightbox || !width || !height) return null;

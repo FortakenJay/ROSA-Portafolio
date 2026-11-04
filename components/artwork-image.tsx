@@ -1,4 +1,5 @@
 import { thumbHashToDataURL } from "thumbhash";
+import { VideoStill } from "@/components/video-still";
 import type { CmsImage } from "@/lib/cms";
 
 const base = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/portfolio/`;
@@ -18,13 +19,14 @@ export function ArtworkImage({
 }) {
   if (image.variants.video) {
     return (
-      <video
+      <VideoStill
         src={`${base}${image.variants.video}`}
-        controls={controls}
-        playsInline
-        preload={priority ? "metadata" : "none"}
-        aria-label={image.alt}
+        poster={image.variants.poster ? `${base}${image.variants.poster}` : null}
+        width={image.width}
+        height={image.height}
+        alt={image.alt}
         className={className}
+        controls={controls}
       />
     );
   }
