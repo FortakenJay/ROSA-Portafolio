@@ -2,8 +2,12 @@
 
 import { useEffect } from "react";
 
-function applyLook(next: "cutesy" | "creepy") {
+function applyLook(next: "cutesy" | "creepy", animate = true) {
   const root = document.documentElement;
+  if (animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    root.classList.add("look-animate");
+    window.setTimeout(() => root.classList.remove("look-animate"), 700);
+  }
   if (next === "creepy") root.dataset.look = "creepy";
   else delete root.dataset.look;
   try {
@@ -17,7 +21,7 @@ function applyLook(next: "cutesy" | "creepy") {
 
 export function LookSwitch() {
   useEffect(() => {
-    applyLook(document.documentElement.dataset.look === "creepy" ? "creepy" : "cutesy");
+    applyLook(document.documentElement.dataset.look === "creepy" ? "creepy" : "cutesy", false);
   }, []);
 
   return (
