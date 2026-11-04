@@ -17,6 +17,7 @@ function applyLook(next: "cutesy" | "creepy", animate = true) {
   }
   document.querySelector<HTMLButtonElement>("[data-look-choice='cutesy']")?.setAttribute("aria-pressed", next === "cutesy" ? "true" : "false");
   document.querySelector<HTMLButtonElement>("[data-look-choice='creepy']")?.setAttribute("aria-pressed", next === "creepy" ? "true" : "false");
+  if (animate) window.dispatchEvent(new Event("rosa-replay-curtain"));
 }
 
 export function LookSwitch() {
