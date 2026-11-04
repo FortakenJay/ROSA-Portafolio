@@ -18,6 +18,25 @@ const display = localFont({
   variable: "--font-display",
 });
 
+const creepyDisplay = localFont({
+  src: "./fonts/unifrakturmaguntia-latin-400.woff2",
+  weight: "400",
+  style: "normal",
+  display: "swap",
+  adjustFontFallback: "Times New Roman",
+  variable: "--font-creepy-display",
+});
+
+const creepyBody = localFont({
+  src: [
+    { path: "./fonts/spectral-latin-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/spectral-latin-400-italic.woff2", weight: "400", style: "italic" },
+  ],
+  display: "swap",
+  adjustFontFallback: "Times New Roman",
+  variable: "--font-creepy-body",
+});
+
 const body = localFont({
   src: [
     {
@@ -57,11 +76,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const name = site?.name || "Rosa Chen Liang";
 
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${display.variable} ${body.variable} ${creepyDisplay.variable} ${creepyBody.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-dvh flex-col">
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{if(sessionStorage.getItem("rosa-curtain")==="seen")document.documentElement.dataset.curtain="seen"}catch(e){}`,
+            __html: `try{if(sessionStorage.getItem("rosa-curtain")==="seen")document.documentElement.dataset.curtain="seen";if(localStorage.getItem("rosa-look")==="creepy")document.documentElement.dataset.look="creepy"}catch(e){}`,
           }}
         />
         <QueryProvider>

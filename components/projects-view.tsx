@@ -38,6 +38,7 @@ export function ProjectsView({ projects }: { projects: ProjectCard[] }) {
                     <ArtworkImage
                       image={project.image}
                       sizes="(min-width: 48rem) 48rem, 100vw"
+                      controls={false}
                       className="w-full origin-center transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                     />
                   ) : project.frame ? (
