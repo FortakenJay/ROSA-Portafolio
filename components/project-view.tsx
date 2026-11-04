@@ -9,6 +9,7 @@ export type ProjectModel = {
   title: string;
   logline: string;
   shots: Shot[];
+  sections: { title: string; shots: Shot[] }[];
 };
 
 export function ProjectView({ project }: { project: ProjectModel }) {
@@ -48,6 +49,28 @@ export function ProjectView({ project }: { project: ProjectModel }) {
           ))}
         </div>
       ) : null}
+      {project.sections.map((section) => (
+        <section key={section.title} className="mt-16">
+          <h2 data-flow="copy" className="pb-1 font-display text-4xl leading-[1.1]">
+            {section.title}
+          </h2>
+          <div className="mt-8 flex flex-col gap-16">
+            {section.shots.map((shot) => (
+              <figure key={`${section.title}-${shot.caption}-${shot.kind === "image" ? shot.image.id : shot.spec.motif}`} data-flow="plate">
+                <Zoomable
+                  shot={shot}
+                  label={`Zoom in. ${shot.caption || section.title}`}
+                  className="block w-full cursor-pointer border-2 border-ink text-left hover:border-rose"
+                  plateClassName="aspect-[16/10] w-full"
+                />
+                {shot.caption ? (
+                  <figcaption className="mt-3 max-w-prose font-body text-lg leading-relaxed text-plum">{shot.caption}</figcaption>
+                ) : null}
+              </figure>
+            ))}
+          </div>
+        </section>
+      ))}
     </article>
   );
 }

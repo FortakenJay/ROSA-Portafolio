@@ -209,7 +209,8 @@ export const contact = {
   email: "hello@rosa.studio",
   socials: [
     { name: "Instagram", href: "https://instagram.com" },
-    { name: "Pinterest", href: "https://www.pinterest.com" },
+    { name: "LinkedIn", href: "https://www.linkedin.com" },
     { name: "YouTube", href: "https://www.youtube.com" },
+    { name: "Linktree", href: "https://linktr.ee" },
   ],
 };

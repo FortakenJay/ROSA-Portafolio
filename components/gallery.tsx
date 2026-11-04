@@ -80,6 +80,7 @@ export function Gallery({ pieces }: { pieces: { title: string; pictures: Shot[] 
                 <ArtworkImage
                   image={item.pictures[0].image}
                   sizes="(min-width: 40rem) 50vw, 100vw"
+                  controls={false}
                   className="w-full origin-center transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none"
                 />
               ) : (

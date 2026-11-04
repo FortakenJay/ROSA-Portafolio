@@ -13,8 +13,11 @@ export type CmsImage = {
     avif: Record<string, string>;
     webp: Record<string, string>;
     lightbox: string;
+    video?: string;
   };
 };
+
+export type CmsSection = { title: string; images: CmsPicture[] };
 
 export type CmsPicture = { image: CmsImage; caption: string };
 
@@ -34,6 +37,7 @@ export type CmsProject = {
   title: string;
   subheading: string;
   images: CmsPicture[];
+  sections: CmsSection[];
 };
 
 export type CmsIllustration = {
@@ -61,6 +65,17 @@ function asImage(row: Record<string, unknown> | null): CmsImage | null {
   const variants = row.variants as CmsImage["variants"] | null;
   const width = Number(row.width);
   const height = Number(row.height);
+  if (variants?.video) {
+    return {
+      id: String(row.id),
+      width: width || 16,
+      height: height || 9,
+      alt: String(row.alt_text ?? ""),
+      thumbhash: null,
+      dominantColor: null,
+      variants: { widths: [], avif: {}, webp: {}, lightbox: "", video: variants.video },
+    };
+  }
   if (!variants?.widths?.length || !variants.webp || !variants.avif || !variants.lightbox || !width || !height) return null;
   return {
     id: String(row.id),
@@ -109,8 +124,9 @@ export async function getSite(): Promise<SiteContent | null> {
   if (!data) return null;
   const socials = [
     { name: "Instagram", href: data.instagram_url as string },
-    { name: "Pinterest", href: data.pinterest_url as string },
+    { name: "LinkedIn", href: data.linkedin_url as string },
     { name: "YouTube", href: data.youtube_url as string },
+    { name: "Linktree", href: data.linktree_url as string },
   ].filter((item) => item.href);
   const [homeImage, aboutImage] = await Promise.all([
     imageForPath(supabase, data.home_image_path as string | null),
@@ -148,6 +164,7 @@ export async function getProjects(): Promise<CmsProject[]> {
     title: row.title as string,
     subheading: row.subheading as string,
     images: picturesOf(row.project_images),
+    sections: [],
   }));
 }
 
@@ -159,7 +176,7 @@ export async function getProject(slug: string): Promise<CmsProject | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("projects")
-    .select("slug, title, subheading, project_images(caption, sort, image:images(*))")
+    .select("slug, title, subheading, project_images(caption, sort, section_id, image:images(*)), project_sections(id, title, sort)")
     .eq("slug", slug)
     .not("published_at", "is", null)
     .maybeSingle();
@@ -168,11 +185,20 @@ export async function getProject(slug: string): Promise<CmsProject | null> {
     throw new Error("The portfolio could not be loaded.");
   }
   if (!data) return null;
+  const joins = Array.isArray(data.project_images) ? data.project_images : [];
+  const sectionRows = Array.isArray(data.project_sections) ? data.project_sections : [];
   return {
     slug: data.slug as string,
     title: data.title as string,
     subheading: data.subheading as string,
-    images: picturesOf(data.project_images),
+    images: picturesOf(joins.filter((row) => !(row as { section_id?: string | null }).section_id)),
+    sections: sectionRows
+      .map((section) => section as { id: string; title: string; sort?: number })
+      .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+      .map((section) => ({
+        title: section.title,
+        images: picturesOf(joins.filter((row) => (row as { section_id?: string | null }).section_id === section.id)),
+      })),
   };
 }
 

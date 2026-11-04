@@ -8,12 +8,26 @@ export function ArtworkImage({
   sizes,
   priority = false,
   className,
+  controls = true,
 }: {
   image: CmsImage;
   sizes: string;
   priority?: boolean;
   className?: string;
+  controls?: boolean;
 }) {
+  if (image.variants.video) {
+    return (
+      <video
+        src={`${base}${image.variants.video}`}
+        controls={controls}
+        playsInline
+        preload={priority ? "metadata" : "none"}
+        aria-label={image.alt}
+        className={className}
+      />
+    );
+  }
   const set = (format: "avif" | "webp") => image.variants.widths.map((width) => `${base}${image.variants[format][String(width)]} ${width}w`).join(", ");
   const fallback = image.variants.webp[String(image.variants.widths.at(-1))];
   const thumb = thumbUrl(image.thumbhash);

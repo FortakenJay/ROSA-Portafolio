@@ -109,6 +109,10 @@ export function Zoomable({
     }
   }
 
+  if (shot.kind === "image" && shot.image.variants.video) {
+    return <ArtworkImage image={shot.image} sizes="(min-width: 56rem) 56rem, 100vw" className="w-full" />;
+  }
+
   return (
     <>
       <button type="button" className={className} aria-label={label} onClick={openViewer}>

@@ -40,6 +40,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     shots: fromDatabase
       ? fromDatabase.images.map((item) => ({ kind: "image", image: item.image, caption: item.caption }))
       : (standIn?.frames ?? []).map((frame): Shot => ({ kind: "plate", spec: frame, caption: frame.caption })),
+    sections: (fromDatabase?.sections ?? []).map((section) => ({
+      title: section.title,
+      shots: section.images.map((item) => ({ kind: "image" as const, image: item.image, caption: item.caption })),
+    })),
   };
 
   return (

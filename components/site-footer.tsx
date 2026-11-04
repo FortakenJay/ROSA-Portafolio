@@ -1,7 +1,8 @@
 import {
   EnvelopeSimpleIcon,
   InstagramLogoIcon,
-  PinterestLogoIcon,
+  LinkedinLogoIcon,
+  LinktreeLogoIcon,
   YoutubeLogoIcon,
 } from "@phosphor-icons/react/ssr";
 import { devStandIns, type SiteContent } from "@/lib/cms";
@@ -9,8 +10,9 @@ import { contact } from "@/lib/content";
 
 const icons = {
   Instagram: InstagramLogoIcon,
-  Pinterest: PinterestLogoIcon,
+  LinkedIn: LinkedinLogoIcon,
   YouTube: YoutubeLogoIcon,
+  Linktree: LinktreeLogoIcon,
 };
 
 export function SiteFooter({ site }: { site: SiteContent | null }) {
