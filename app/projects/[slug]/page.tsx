@@ -13,7 +13,6 @@ type ProjectPageProps = {
 
 export async function generateStaticParams() {
   const published = await getProjects();
-  if (published.length === 0) return [{ slug: "draft" }];
   return published.map((project) => ({ slug: project.slug }));
 }
 
