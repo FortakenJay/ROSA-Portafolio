@@ -1,4 +1,4 @@
-export type Motif = "bow" | "rose" | "arch" | "candle" | "parasol" | "window";
+type Motif = "bow" | "rose" | "arch" | "candle" | "parasol" | "window";
 
 export type PaletteName = "night" | "paper" | "blush" | "rose";
 
@@ -8,18 +8,18 @@ export type PlateSpec = {
   flip?: boolean;
 };
 
-export type Picture = PlateSpec & {
+type Picture = PlateSpec & {
   caption: string;
 };
 
-export type Project = {
+type Project = {
   slug: string;
   title: string;
   logline: string;
   frames: Picture[];
 };
 
-export type GalleryPiece = {
+type GalleryPiece = {
   title: string;
   pictures: Picture[];
 };
