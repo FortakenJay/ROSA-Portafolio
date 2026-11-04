@@ -470,6 +470,26 @@ html[data-look="creepy"] .nav-pill:hover {
     transition-duration: 0.7s;
     transition-timing-function: ease;
   }
+
+  html.look-wipe::view-transition-old(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  html.look-wipe::view-transition-new(root) {
+    animation: look-wipe-in 0.7s cubic-bezier(0.65, 0, 0.35, 1) both;
+    mix-blend-mode: normal;
+    filter: drop-shadow(2px 2px 0 #050316) drop-shadow(4px 4px 0 #f8f7ed);
+  }
+}
+
+@keyframes look-wipe-in {
+  from {
+    clip-path: polygon(0 0, 0 0, 0 0);
+  }
+  to {
+    clip-path: polygon(0 0, 200% 0, 0 200%);
+  }
 }
 
 .page-skeleton {

@@ -84,22 +84,9 @@ export function Curtain({ name }: { name: string }) {
   const scene = useRef<HTMLDivElement>(null);
   const root = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
-  const [play, setPlay] = useState(0);
-  const replay = play > 0;
-
-  useEffect(() => {
-    const onReplay = () => {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      delete document.documentElement.dataset.curtain;
-      setVisible(true);
-      setPlay((count) => count + 1);
-    };
-    window.addEventListener("rosa-replay-curtain", onReplay);
-    return () => window.removeEventListener("rosa-replay-curtain", onReplay);
-  }, []);
 
   useLayoutEffect(() => {
-    if (curtainAlreadySeen() && !replay) {
+    if (curtainAlreadySeen()) {
       document.documentElement.dataset.curtain = "seen";
       return;
     }
@@ -144,10 +131,10 @@ export function Curtain({ name }: { name: string }) {
       window.scrollTo(0, scrollY);
       window.removeEventListener("keydown", blockKeys);
     };
-  }, [visible, replay]);
+  }, [visible]);
 
   useEffect(() => {
-    if ((curtainAlreadySeen() && !replay) || !visible) return;
+    if (curtainAlreadySeen() || !visible) return;
     const node = root.current;
     const scope = scene.current;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -182,9 +169,9 @@ export function Curtain({ name }: { name: string }) {
     }, scope);
 
     return () => context.revert();
-  }, [replay, visible]);
+  }, [visible]);
 
-  if ((seen && !replay) || !visible) return null;
+  if (seen || !visible) return null;
 
   return (
     <div ref={scene}>
