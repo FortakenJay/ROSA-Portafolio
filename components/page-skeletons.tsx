@@ -54,7 +54,7 @@ function ListSkeleton() {
 function ProjectSkeleton() {
   return (
     <Blocks width="max-w-4xl">
-      <div className="page-skeleton h-9 w-28 rounded-full" />
+      <div className="page-skeleton h-6 w-16" />
       <div className="page-skeleton h-14 w-3/4" />
       <div className="page-skeleton aspect-[16/10] w-full" />
     </Blocks>

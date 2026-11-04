@@ -19,7 +19,7 @@ export function ProjectView({ project }: { project: ProjectModel }) {
     <article className="mx-auto w-full max-w-4xl px-4 pb-8">
       <Link
         href="/projects"
-        className="inline-block rounded-full border-2 border-primary-300 bg-primary-200 px-3 py-1.5 font-body text-base leading-none text-ink hover:bg-primary-300 sm:px-5 sm:text-lg"
+        className="inline-flex min-h-11 items-center font-body text-lg leading-none text-ink underline decoration-2 underline-offset-8 transition-colors duration-300 hover:text-rose"
       >
         Back
       </Link>

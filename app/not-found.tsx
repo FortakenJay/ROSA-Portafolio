@@ -9,7 +9,7 @@ export default function NotFound() {
       <p className="mt-4 font-body text-lg leading-relaxed text-plum">
         The address does not match a project or a page on this site.
       </p>
-      <Link href="/" className="mt-8 inline-block rounded-full border-2 border-ink px-5 py-2 font-body text-lg">
+      <Link href="/" className="mt-8 inline-flex min-h-11 items-center font-body text-lg leading-none text-ink underline decoration-2 underline-offset-8 transition-colors duration-300 hover:text-rose">
         Back to the preview
       </Link>
     </section>
