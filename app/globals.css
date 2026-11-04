@@ -402,7 +402,7 @@ html[data-look="creepy"] .look-option-creep {
 @media (prefers-reduced-motion: no-preference) {
   html.look-animate,
   html.look-animate body,
-  html.look-animate body * {
+  html.look-animate body *:not(.curtain, .curtain *, .curtain-petals, .curtain-petals *) {
     transition-property: color, background-color, border-color, outline-color, caret-color, text-decoration-color, fill, stroke;
     transition-duration: 0.7s;
     transition-timing-function: ease;

@@ -1,7 +1,7 @@
 "use client";
 
 import gsap from "gsap";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const roses = [
   { x: 2, y: 2, size: 108, tilt: -8 },
@@ -58,21 +58,41 @@ function tiltOf(_index: number, target: Element) {
   return Number((target as HTMLElement).dataset.tilt);
 }
 
+function subscribeCurtain() {
+  return () => {};
+}
+
+function curtainAlreadySeen() {
+  try {
+    return window.sessionStorage.getItem("rosa-curtain") === "seen";
+  } catch {
+    return false;
+  }
+}
+
+function rememberCurtain() {
+  try {
+    window.sessionStorage.setItem("rosa-curtain", "seen");
+  } catch {
+    // Storage can be blocked. The curtain still closes.
+  }
+  document.documentElement.dataset.curtain = "seen";
+}
+
 export function Curtain({ name }: { name: string }) {
+  const seen = useSyncExternalStore(subscribeCurtain, curtainAlreadySeen, () => false);
   const scene = useRef<HTMLDivElement>(null);
   const root = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
 
   useLayoutEffect(() => {
+    if (curtainAlreadySeen()) {
+      document.documentElement.dataset.curtain = "seen";
+      return;
+    }
     if (!visible) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let seen = false;
-    try {
-      seen = window.sessionStorage.getItem("rosa-curtain") === "seen";
-    } catch {
-      seen = false;
-    }
-    if (reduce || seen) return;
+    if (reduce) return;
     const html = document.documentElement;
     const body = document.body;
     const scrollY = window.scrollY;
@@ -114,27 +134,18 @@ export function Curtain({ name }: { name: string }) {
   }, [visible]);
 
   useEffect(() => {
+    if (curtainAlreadySeen()) return;
     const node = root.current;
     const scope = scene.current;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let seen = false;
-    try {
-      seen = window.sessionStorage.getItem("rosa-curtain") === "seen";
-    } catch {
-      seen = false;
-    }
-    if (!node || !scope || reduce || seen) return;
+    if (!node || !scope || reduce) return;
 
     const context = gsap.context(() => {
       gsap
         .timeline({
           defaults: { ease: "power3.inOut" },
           onComplete: () => {
-            try {
-              window.sessionStorage.setItem("rosa-curtain", "seen");
-            } catch {
-              // Storage can be blocked. The curtain still closes.
-            }
+            rememberCurtain();
             setVisible(false);
           },
         })
@@ -160,7 +171,7 @@ export function Curtain({ name }: { name: string }) {
     return () => context.revert();
   }, []);
 
-  if (!visible) return null;
+  if (seen || !visible) return null;
 
   return (
     <div ref={scene}>
