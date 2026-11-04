@@ -423,6 +423,15 @@ html[data-look="creepy"] .nav-pill {
   text-transform: uppercase;
 }
 
+@media (width < 40rem) {
+  html[data-look="creepy"] .nav-pill {
+    padding-right: 0.4rem;
+    padding-left: 0.4rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+  }
+}
+
 html[data-look="creepy"] .nav-pill[aria-current="page"] {
   background-size: 112% 12px;
 }

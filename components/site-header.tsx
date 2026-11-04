@@ -33,7 +33,7 @@ export function SiteHeader({ name }: { name: string }) {
         </Link>
         <LookSwitch />
       </div>
-      <nav aria-label="Pages" className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+      <nav aria-label="Pages" className="mt-5 flex flex-wrap items-center justify-center gap-1.5 sm:gap-3">
         {links.map((link) => {
           const current = isCurrent(pathname, link.href);
           return (
@@ -41,7 +41,7 @@ export function SiteHeader({ name }: { name: string }) {
               key={link.href}
               href={link.href}
               aria-current={current ? "page" : undefined}
-              className={`nav-pill rounded-full border-2 border-primary-300 px-3 py-1.5 font-body text-base leading-none text-ink transition duration-300 sm:px-5 sm:text-lg ${
+              className={`nav-pill rounded-full border-2 border-primary-300 px-2 py-1.5 font-body text-base leading-none text-ink transition duration-300 sm:px-5 sm:text-lg ${
                 current ? "bg-primary-300" : "bg-primary-200 hover:-translate-y-0.5 hover:bg-primary-300 motion-reduce:hover:translate-y-0"
               }`}
             >
