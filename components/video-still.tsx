@@ -7,11 +7,13 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 const chrome =
   "player-control absolute z-10 grid place-items-center transition-opacity duration-500 motion-reduce:transition-none";
 
-function usePlayerChrome(enabled: boolean) {
+function usePlayerChrome(enabled: boolean, playing: boolean) {
   const frame = useRef<HTMLDivElement>(null);
   const idle = useRef<number | null>(null);
+  const playingRef = useRef(playing);
   const [lit, setLit] = useState(true);
   const [full, setFull] = useState(false);
+  playingRef.current = playing;
 
   function clearIdle() {
     if (idle.current === null) return;
@@ -21,7 +23,15 @@ function usePlayerChrome(enabled: boolean) {
 
   function fadeLater() {
     clearIdle();
-    idle.current = window.setTimeout(() => setLit(false), 1600);
+    if (!playingRef.current) return;
+    idle.current = window.setTimeout(() => {
+      idle.current = null;
+      if (!playingRef.current) {
+        setLit(true);
+        return;
+      }
+      setLit(false);
+    }, 1600);
   }
 
   function showControls() {
@@ -29,11 +39,21 @@ function usePlayerChrome(enabled: boolean) {
     fadeLater();
   }
 
+  function holdOpen() {
+    playingRef.current = false;
+    setLit(true);
+    clearIdle();
+  }
+
   useEffect(() => {
     if (!enabled) return;
+    if (!playing) {
+      holdOpen();
+      return;
+    }
     fadeLater();
     return clearIdle;
-  }, [enabled]);
+  }, [enabled, playing]);
 
   useEffect(() => {
     function onChange() {
@@ -70,7 +90,7 @@ function usePlayerChrome(enabled: boolean) {
     }
   }
 
-  return { frame, lit, full, showControls, toggleFull };
+  return { frame, lit, full, showControls, holdOpen, toggleFull };
 }
 
 function markFirstFrame(node: HTMLVideoElement) {
@@ -102,6 +122,7 @@ function StillMedia({
   alt,
   started,
   onPlaying,
+  onPause,
 }: {
   video: RefObject<HTMLVideoElement | null>;
   src: string;
@@ -109,6 +130,7 @@ function StillMedia({
   alt: string;
   started: boolean;
   onPlaying: (playing: boolean) => void;
+  onPause: () => void;
 }) {
   const showingFile = started || !poster;
   return (
@@ -125,7 +147,10 @@ function StillMedia({
           if (!started) markFirstFrame(event.currentTarget);
         }}
         onPlay={() => onPlaying(true)}
-        onPause={() => onPlaying(false)}
+        onPause={() => {
+          onPause();
+          onPlaying(false);
+        }}
         onEnded={() => onPlaying(false)}
       />
       {started || !poster ? null : <img src={poster} alt="" className="h-full w-full object-contain" />}
@@ -164,7 +189,7 @@ function PlayerButtons({
         aria-pressed={playing}
         aria-label={playing ? "Pause" : "Play"}
         className="absolute inset-0 z-10"
-        style={{ cursor: lit ? "pointer" : "none" }}
+        style={{ cursor: !playing || lit ? "pointer" : "none" }}
       />
       <span aria-hidden="true" className={`${chrome} pointer-events-none player-play top-1/2 left-1/2 size-16 -translate-x-1/2 -translate-y-1/2 rounded-full ${hidden}`}>
         {playing ? <PauseIcon weight="light" size={28} /> : <PlayIcon weight="light" size={28} />}
@@ -207,6 +232,7 @@ function PlayerStage({
   toggle,
   toggleFull,
   onPlaying,
+  onPause,
 }: {
   frame: RefObject<HTMLDivElement | null>;
   video: RefObject<HTMLVideoElement | null>;
@@ -227,6 +253,7 @@ function PlayerStage({
   toggle: () => void;
   toggleFull: () => Promise<void>;
   onPlaying: (playing: boolean) => void;
+  onPause: () => void;
 }) {
   return (
     <div
@@ -234,11 +261,11 @@ function PlayerStage({
       className={`relative block ${full ? "grid h-full w-full place-items-center bg-ink" : ""} ${className ?? ""}`}
       style={{
         ...(full ? {} : { aspectRatio: `${width} / ${height}` }),
-        cursor: controls && !lit ? "none" : undefined,
+        cursor: controls && playing && !lit ? "none" : undefined,
       }}
       onPointerMove={controls ? showControls : undefined}
     >
-      <StillMedia video={video} src={src} poster={poster} alt={alt} started={started} onPlaying={onPlaying} />
+      <StillMedia video={video} src={src} poster={poster} alt={alt} started={started} onPlaying={onPlaying} onPause={onPause} />
       <PlayerButtons
         controls={controls}
         fullscreen={fullscreen}
@@ -274,9 +301,9 @@ export function VideoStill({
   fullscreen?: boolean;
 }) {
   const video = useRef<HTMLVideoElement>(null);
-  const { frame, lit, full, showControls, toggleFull } = usePlayerChrome(controls);
   const [started, setStarted] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const { frame, lit, full, showControls, holdOpen, toggleFull } = usePlayerChrome(controls, playing);
 
   return (
     <PlayerStage
@@ -294,14 +321,18 @@ export function VideoStill({
       full={full}
       started={started}
       playing={playing}
-      hidden={lit ? "opacity-100" : "pointer-events-none opacity-0"}
+      hidden={!playing || lit ? "opacity-100" : "pointer-events-none opacity-0"}
       showControls={showControls}
       toggle={() => {
-        showControls();
-        playOrPause(video.current, src, () => setStarted(true), setPlaying);
+        const node = video.current;
+        const pausing = Boolean(node?.getAttribute("src") && node.paused === false);
+        if (pausing) holdOpen();
+        else showControls();
+        playOrPause(node, src, () => setStarted(true), setPlaying);
       }}
       toggleFull={toggleFull}
       onPlaying={setPlaying}
+      onPause={holdOpen}
     />
   );
 }

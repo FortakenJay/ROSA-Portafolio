@@ -50,7 +50,7 @@ export function ProjectView({ project }: { project: ProjectModel }) {
                 plateClassName="aspect-[16/10] w-full"
               />
               {shot.caption ? (
-                <figcaption className="mt-3 max-w-prose font-body text-lg leading-relaxed text-plum">{shot.caption}</figcaption>
+                <figcaption className="mt-3 font-body text-base leading-relaxed text-ink sm:text-lg">{shot.caption}</figcaption>
               ) : null}
             </figure>
           ))}
@@ -71,7 +71,7 @@ export function ProjectView({ project }: { project: ProjectModel }) {
                   plateClassName="aspect-[16/10] w-full"
                 />
                 {shot.caption ? (
-                  <figcaption className="mt-3 max-w-prose font-body text-lg leading-relaxed text-plum">{shot.caption}</figcaption>
+                  <figcaption className="mt-3 font-body text-base leading-relaxed text-ink sm:text-lg">{shot.caption}</figcaption>
                 ) : null}
               </figure>
             ))}

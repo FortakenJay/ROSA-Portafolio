@@ -7,14 +7,16 @@ import { ArtworkImage } from "@/components/artwork-image";
 import { Plate } from "@/components/plate";
 import type { Shot } from "@/lib/shots";
 
-function useReelChrome() {
+function useReelChrome(playing: boolean) {
   const stage = useRef<HTMLDivElement>(null);
   const idle = useRef<number | null>(null);
   const held = useRef(false);
   const fromPointer = useRef(false);
+  const playingRef = useRef(playing);
   const [full, setFull] = useState(false);
   const [open, setOpen] = useState(false);
   const [lit, setLit] = useState(true);
+  playingRef.current = playing;
 
   function clearIdle() {
     if (idle.current === null) return;
@@ -24,8 +26,12 @@ function useReelChrome() {
 
   function fadeLater() {
     clearIdle();
-    if (held.current) return;
-    idle.current = window.setTimeout(() => setLit(false), 1600);
+    if (held.current || !playingRef.current) return;
+    idle.current = window.setTimeout(() => {
+      idle.current = null;
+      if (!playingRef.current) return;
+      setLit(false);
+    }, 1600);
   }
 
   function showControls() {
@@ -89,9 +95,14 @@ function useReelChrome() {
   }, [open]);
 
   useEffect(() => {
+    if (!playing) {
+      setLit(true);
+      clearIdle();
+      return;
+    }
     fadeLater();
     return clearIdle;
-  }, []);
+  }, [playing]);
 
   async function toggleFull() {
     const node = stage.current;
@@ -124,9 +135,9 @@ function useReelChrome() {
 }
 
 export function Reel({ frames, priority = false }: { frames: Shot[]; priority?: boolean }) {
-  const chrome = useReelChrome();
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
+  const chrome = useReelChrome(playing);
   const expanded = chrome.full || chrome.open;
   const frame = frames[index];
 
@@ -207,7 +218,7 @@ function ReelStage({
 }) {
   const video = frame.kind === "image" && Boolean(frame.image.variants.video);
   return (
-    <div ref={stage} className={`reel-stage relative border-2 border-ink p-1.5 ${open ? "is-open" : ""}`} style={lit ? undefined : { cursor: "none" }}>
+    <div ref={stage} className={`reel-stage relative border-2 border-ink p-1.5 ${open ? "is-open" : ""}`} style={playing && !lit ? { cursor: "none" } : undefined}>
       <div className="reel-frame relative border-2 border-ink" onPointerMove={onMove}>
         {frame.kind === "image" ? (
           <ArtworkImage image={frame.image} sizes="(min-width: 56rem) 56rem, 100vw" priority={priority} controls={video} fullscreen={false} className="w-full" />
