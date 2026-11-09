@@ -16,7 +16,6 @@ function useReelChrome(playing: boolean) {
   const [full, setFull] = useState(false);
   const [open, setOpen] = useState(false);
   const [lit, setLit] = useState(true);
-  playingRef.current = playing;
 
   function clearIdle() {
     if (idle.current === null) return;
@@ -95,13 +94,22 @@ function useReelChrome(playing: boolean) {
   }, [open]);
 
   useEffect(() => {
-    if (!playing) {
-      setLit(true);
-      clearIdle();
-      return;
+    playingRef.current = playing;
+    if (idle.current !== null) {
+      window.clearTimeout(idle.current);
+      idle.current = null;
     }
-    fadeLater();
-    return clearIdle;
+    if (!playing) return;
+    idle.current = window.setTimeout(() => {
+      idle.current = null;
+      if (!playingRef.current) return;
+      setLit(false);
+    }, 1600);
+    return () => {
+      if (idle.current === null) return;
+      window.clearTimeout(idle.current);
+      idle.current = null;
+    };
   }, [playing]);
 
   async function toggleFull() {

@@ -25,7 +25,7 @@ export function SiteFooter({ site }: { site: SiteContent | null }) {
       <div className="mx-auto flex max-w-5xl flex-col gap-6 border-t-2 border-ink pt-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="font-display text-4xl leading-none tracking-wide text-ink">Rosa</p>
-          <p className="mt-2 font-body text-base text-ink">Rosa Chen Liang's art portfolio.</p>
+          <p className="mt-2 font-body text-base text-ink">{"Rosa Chen Liang's art portfolio."}</p>
         </div>
         <div className="sm:text-right">
           {email ? (

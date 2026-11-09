@@ -7,13 +7,12 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 const chrome =
   "player-control absolute z-10 grid place-items-center transition-opacity duration-500 motion-reduce:transition-none";
 
-function usePlayerChrome(enabled: boolean, playing: boolean) {
+function usePlayerChrome(playing: boolean) {
   const frame = useRef<HTMLDivElement>(null);
   const idle = useRef<number | null>(null);
   const playingRef = useRef(playing);
   const [lit, setLit] = useState(true);
   const [full, setFull] = useState(false);
-  playingRef.current = playing;
 
   function clearIdle() {
     if (idle.current === null) return;
@@ -46,14 +45,23 @@ function usePlayerChrome(enabled: boolean, playing: boolean) {
   }
 
   useEffect(() => {
-    if (!enabled) return;
-    if (!playing) {
-      holdOpen();
-      return;
+    playingRef.current = playing;
+    if (idle.current !== null) {
+      window.clearTimeout(idle.current);
+      idle.current = null;
     }
-    fadeLater();
-    return clearIdle;
-  }, [enabled, playing]);
+    if (!playing) return;
+    idle.current = window.setTimeout(() => {
+      idle.current = null;
+      if (!playingRef.current) return;
+      setLit(false);
+    }, 1600);
+    return () => {
+      if (idle.current === null) return;
+      window.clearTimeout(idle.current);
+      idle.current = null;
+    };
+  }, [playing]);
 
   useEffect(() => {
     function onChange() {
@@ -303,7 +311,7 @@ export function VideoStill({
   const video = useRef<HTMLVideoElement>(null);
   const [started, setStarted] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const { frame, lit, full, showControls, holdOpen, toggleFull } = usePlayerChrome(controls, playing);
+  const { frame, lit, full, showControls, holdOpen, toggleFull } = usePlayerChrome(playing);
 
   return (
     <PlayerStage
