@@ -23,7 +23,10 @@ export function SiteFooter({ site }: { site: SiteContent | null }) {
   return (
     <footer className="px-4 pt-16 pb-8">
       <div className="mx-auto flex max-w-5xl flex-col gap-6 border-t-2 border-ink pt-6 sm:flex-row sm:items-end sm:justify-between">
-        <p className="font-body text-base text-ink">© 2026 Rosa</p>
+        <div>
+          <p className="font-display text-4xl leading-none tracking-wide text-ink">Rosa</p>
+          <p className="mt-2 font-body text-base text-ink">Rosa Chen Liang's art portfolio.</p>
+        </div>
         <div className="sm:text-right">
           {email ? (
             <a href={`mailto:${email}`} className="inline-flex items-center gap-2 font-body text-base text-ink">
@@ -50,6 +53,9 @@ export function SiteFooter({ site }: { site: SiteContent | null }) {
           </ul>
         </div>
       </div>
+      <p className="mx-auto mt-8 max-w-5xl border-t border-ink/25 pt-4 text-center font-body text-sm text-ink">
+        © 2026 Rosa Chen Liang. Built with ❤ by Jih
+      </p>
     </footer>
   );
 }

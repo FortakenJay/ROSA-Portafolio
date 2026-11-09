@@ -207,10 +207,10 @@ function ReelStage({
 }) {
   const video = frame.kind === "image" && Boolean(frame.image.variants.video);
   return (
-    <div ref={stage} className={`reel-stage relative border-2 border-ink p-1.5 ${open ? "is-open" : ""}`}>
+    <div ref={stage} className={`reel-stage relative border-2 border-ink p-1.5 ${open ? "is-open" : ""}`} style={lit ? undefined : { cursor: "none" }}>
       <div className="reel-frame relative border-2 border-ink" onPointerMove={onMove}>
         {frame.kind === "image" ? (
-          <ArtworkImage image={frame.image} sizes="(min-width: 56rem) 56rem, 100vw" priority={priority} controls={video} className="w-full" />
+          <ArtworkImage image={frame.image} sizes="(min-width: 56rem) 56rem, 100vw" priority={priority} controls={video} fullscreen={false} className="w-full" />
         ) : (
           <Plate spec={frame.spec} className="aspect-video w-full" />
         )}
@@ -223,7 +223,7 @@ function ReelStage({
             onBlur={onBlur}
             aria-pressed={playing}
             aria-label={playing ? "Pause reel" : "Play reel"}
-            className={`absolute top-1/2 left-1/2 z-10 grid size-16 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full border-2 border-ink bg-lace text-ink transition-opacity duration-500 hover:bg-rose hover:text-lace motion-reduce:transition-none ${lit ? "opacity-100" : "pointer-events-none opacity-0"}`}
+            className={`player-control player-play absolute top-1/2 left-1/2 z-10 grid size-16 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full transition-opacity duration-500 motion-reduce:transition-none ${lit ? "opacity-100" : "pointer-events-none opacity-0"}`}
           >
             {playing ? <PauseIcon weight="light" size={28} aria-hidden="true" /> : <PlayIcon weight="light" size={28} aria-hidden="true" />}
           </button>
@@ -235,7 +235,7 @@ function ReelStage({
           aria-label={expanded ? "Exit full screen" : "Full screen"}
           onFocus={onFocus}
           onBlur={onBlur}
-          className={`absolute right-3 bottom-3 z-10 grid size-11 cursor-pointer place-items-center border-2 border-ink bg-lace text-ink transition-opacity duration-500 hover:bg-ink hover:text-lace motion-reduce:transition-none ${lit ? "opacity-100" : "pointer-events-none opacity-0"}`}
+          className={`player-control absolute right-3 bottom-3 z-10 grid size-11 cursor-pointer place-items-center transition-opacity duration-500 motion-reduce:transition-none ${lit ? "opacity-100" : "pointer-events-none opacity-0"}`}
         >
           {expanded ? <ArrowsInIcon weight="light" size={22} aria-hidden="true" /> : <ArrowsOutIcon weight="light" size={22} aria-hidden="true" />}
         </button>

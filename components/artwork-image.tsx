@@ -10,12 +10,14 @@ export function ArtworkImage({
   priority = false,
   className,
   controls = true,
+  fullscreen = true,
 }: {
   image: CmsImage;
   sizes: string;
   priority?: boolean;
   className?: string;
   controls?: boolean;
+  fullscreen?: boolean;
 }) {
   if (image.variants.video) {
     return (
@@ -27,6 +29,7 @@ export function ArtworkImage({
         alt={image.alt}
         className={className}
         controls={controls}
+        fullscreen={fullscreen}
       />
     );
   }

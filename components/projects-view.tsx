@@ -29,7 +29,7 @@ export function ProjectsView({ projects }: { projects: ProjectCard[] }) {
               >
                 {project.title}
               </h2>
-              <p data-flow="copy" className="mt-2 max-w-md border-b-2 border-rose pb-2 font-body text-xl leading-relaxed italic">
+              <p data-flow="copy" className="mt-2 border-b-2 border-rose pb-2 font-body text-base leading-relaxed italic sm:text-lg">
                 {project.logline}
               </p>
               {project.image || project.frame ? (

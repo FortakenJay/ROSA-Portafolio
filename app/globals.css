@@ -376,6 +376,12 @@ html[data-curtain="seen"] .curtain-petals {
   display: none;
 }
 
+html:not([data-look="creepy"]) .not-found-creepy,
+html[data-look="creepy"] .not-found-cutesy {
+  display: none;
+}
+
+/* The look switch stays a pill in both looks. */
 .look-switch {
   display: inline-flex;
   overflow: hidden;
@@ -460,6 +466,33 @@ html[data-look="creepy"] .border-2:not(.nav-link) {
   border-width: 1px;
   border-color: #cfc4b4;
   border-radius: 0;
+}
+
+.player-control {
+  border: 2px solid var(--ink);
+  background: var(--lace);
+  color: var(--ink);
+}
+
+.player-control:hover {
+  background: var(--rose);
+  color: var(--paper);
+}
+
+html[data-look="creepy"] .player-control {
+  border-width: 2px;
+  border-color: #f3ebe3;
+  background-color: #1a0c10;
+  color: #f3ebe3;
+}
+
+html[data-look="creepy"] .player-control.player-play {
+  border-radius: 999px;
+}
+
+html[data-look="creepy"] .player-control:hover {
+  background-color: #6e1520;
+  color: #f3ebe3;
 }
 
 html[data-look="creepy"] .nav-link,

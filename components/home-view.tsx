@@ -37,7 +37,7 @@ export function HomeView({ home }: { home: HomeModel }) {
         </Link>
       ) : null}
       {home.homeText ? (
-        <p data-flow="copy" className="mt-6 max-w-xl font-body text-xl leading-relaxed">
+        <p data-flow="copy" className="mt-6 font-body text-base leading-relaxed sm:text-lg">
           {home.homeText}
         </p>
       ) : null}

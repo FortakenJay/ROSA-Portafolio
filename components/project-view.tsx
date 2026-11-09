@@ -26,7 +26,7 @@ export function ProjectView({ project }: { project: ProjectModel }) {
       <h1 data-flow="copy" className="mt-6 pb-1 font-display text-5xl leading-[1.1] md:text-6xl">
         {project.title}
       </h1>
-      <p data-flow="copy" className="mt-3 max-w-md border-b-2 border-rose pb-2 font-body text-xl leading-relaxed italic">
+      <p data-flow="copy" className="mt-3 border-b-2 border-rose pb-2 font-body text-base leading-relaxed italic sm:text-lg">
         {project.logline}
       </p>
       {project.cover?.kind === "image" ? (
